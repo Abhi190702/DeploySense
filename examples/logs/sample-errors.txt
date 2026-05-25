@@ -1,0 +1,10 @@
+Warning: ImagePullBackOff pulling image registry.example.com/app:latest
+Pod entered CrashLoopBackOff after startup
+ErrImagePull from Docker Hub
+permission denied opening /app/data
+Bind for 0.0.0.0:5432 failed: port is already allocated
+ECONNREFUSED 10.0.0.5:5432
+Error: Cannot find module 'express'
+write /tmp/cache: no space left on device
+Container terminated with exit code 137
+net/http: TLS handshake timeout

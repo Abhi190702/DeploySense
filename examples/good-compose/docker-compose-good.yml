@@ -1,0 +1,30 @@
+services:
+  web:
+    image: myapp:1.0.0
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      API_KEY: ${API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+    networks:
+      - app_net
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+    networks:
+      - app_net
+volumes:
+  db_data:
+networks:
+  app_net:

@@ -1,0 +1,36 @@
+{
+  "name": "deploysense-vscode",
+  "displayName": "DeploySense",
+  "description": "Scan deployment configs and show DeploySense diagnostics in VS Code.",
+  "version": "1.0.0",
+  "publisher": "deploysense",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Linters"],
+  "activationEvents": ["onCommand:deploysense.scanCurrentFile", "onLanguage:dockerfile", "onLanguage:yaml"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "deploysense.scanCurrentFile",
+        "title": "DeploySense: Scan Current File"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@deploysense/compose-scanner": "workspace:*",
+    "@deploysense/docker-scanner": "workspace:*",
+    "@deploysense/github-actions-scanner": "workspace:*",
+    "@deploysense/k8s-scanner": "workspace:*",
+    "@deploysense/scanner-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "deploysense",
+  "version": "1.0.0",
+  "description": "DeploySense CLI: scan Docker, Kubernetes, GitHub Actions, Compose files, and deployment logs.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "deploysense": "dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@deploysense/compose-scanner": "workspace:*",
+    "@deploysense/docker-scanner": "workspace:*",
+    "@deploysense/github-actions-scanner": "workspace:*",
+    "@deploysense/k8s-scanner": "workspace:*",
+    "@deploysense/log-doctor": "workspace:*",
+    "@deploysense/scanner-core": "workspace:*",
+    "boxen": "^5.1.2",
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "ora": "^5.4.1",
+    "yaml": "^2.6.1"
+  }
+}

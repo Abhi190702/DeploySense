@@ -1,0 +1,11 @@
+version: 1
+ignore:
+  - examples/
+  - coverage/
+  - node_modules/
+  - dist/
+  - .next/
+rules:
+  disable: []
+failOn: high
+output: terminal

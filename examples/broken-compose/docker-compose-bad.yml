@@ -1,0 +1,20 @@
+services:
+  web:
+    image: myapp:latest
+    ports:
+      - "3000:3000"
+    environment:
+      API_KEY: hardcoded
+    depends_on:
+      - db
+  worker:
+    image: myapp
+    ports:
+      - "3000:3000"
+    privileged: true
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: supersecret

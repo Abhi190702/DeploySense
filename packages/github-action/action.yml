@@ -1,0 +1,36 @@
+name: "DeploySense"
+description: "Scan Docker, Kubernetes, GitHub Actions, and Compose files for deployment issues"
+author: "deploysense"
+inputs:
+  scan-path:
+    description: "Path to scan"
+    default: "."
+    required: false
+  fail-on:
+    description: "Minimum severity to fail the workflow"
+    default: "high"
+    required: false
+  comment-pr:
+    description: "Post a comment on PRs with the scan report"
+    default: "true"
+    required: false
+  github-token:
+    description: "GitHub token for PR comments"
+    default: "${{ github.token }}"
+    required: false
+  output-format:
+    description: "Output format: terminal, json, sarif, markdown"
+    default: "terminal"
+    required: false
+outputs:
+  score:
+    description: "Overall project health score"
+  issues-count:
+    description: "Total number of issues found"
+  critical-count:
+    description: "Number of critical issues"
+  high-count:
+    description: "Number of high severity issues"
+runs:
+  using: "node20"
+  main: "dist/index.js"

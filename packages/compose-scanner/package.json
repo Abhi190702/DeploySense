@@ -1,0 +1,17 @@
+{
+  "name": "@deploysense/compose-scanner",
+  "version": "1.0.0",
+  "description": "Docker Compose scanner rules for DeploySense.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@deploysense/scanner-core": "workspace:*",
+    "yaml": "^2.6.1"
+  }
+}

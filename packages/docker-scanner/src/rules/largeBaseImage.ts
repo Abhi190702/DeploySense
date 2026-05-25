@@ -1,0 +1,27 @@
+import type { Rule } from "@deploysense/scanner-core";
+import { docker, issue } from "./helpers";
+
+export const largeBaseImageRule: Rule = {
+  id: "DOCKER_LARGE_BASE_IMAGE",
+  title: "Large base image",
+  severity: "low",
+  category: "performance",
+  tags: ["image-size"],
+  autoFixable: true,
+  check(input) {
+    return {
+      issues: docker(input).from
+        .filter((item) => /^(ubuntu|debian|centos)(:|\s|$)/i.test(item.arguments) && !/(slim|alpine)/i.test(item.arguments))
+        .map((item) => issue(input, {
+          line: item.lineNumber,
+          message: "Base image is a full Linux distribution.",
+          why: "Full distro images increase attack surface, build time, and pull time.",
+          fix: "Use a slim or alpine image where compatible.",
+          badExample: item.raw,
+          goodExample: item.raw.replace(/(ubuntu|debian)(:\S+)?/i, "debian:bookworm-slim"),
+          diffPreview: `- ${item.raw}\n+ FROM debian:bookworm-slim`,
+          autoFixable: true
+        }))
+    };
+  }
+};

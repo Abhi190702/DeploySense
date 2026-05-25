@@ -1,0 +1,37 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DeploySense Express API server.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@deploysense/compose-scanner": "workspace:*",
+    "@deploysense/docker-scanner": "workspace:*",
+    "@deploysense/github-actions-scanner": "workspace:*",
+    "@deploysense/k8s-scanner": "workspace:*",
+    "@deploysense/log-doctor": "workspace:*",
+    "@deploysense/scanner-core": "workspace:*",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0",
+    "nanoid": "^5.0.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/morgan": "^1.9.9",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.2"
+  }
+}

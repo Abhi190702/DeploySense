@@ -1,0 +1,24 @@
+{
+  "name": "@deploysense/github-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub Action for DeploySense scanning.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --target es2020",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@deploysense/compose-scanner": "workspace:*",
+    "@deploysense/docker-scanner": "workspace:*",
+    "@deploysense/github-actions-scanner": "workspace:*",
+    "@deploysense/k8s-scanner": "workspace:*",
+    "@deploysense/scanner-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.3"
+  }
+}
