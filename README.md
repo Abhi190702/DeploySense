@@ -229,6 +229,8 @@ Open-source trust signals are being added carefully:
 - **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns. CI publishes Scorecard results and uploads SARIF alerts.
 - **OpenSSF Best Practices** is a Linux Foundation badge program. It requires registering the project and answering project governance/security questions.
 - **Codecov** shows tracked test coverage over time. The current local test suite reports **91.6%** coverage, and CI uploads `coverage/lcov.info`.
+- **CodeQL** runs static analysis for JavaScript and TypeScript.
+- **Dependabot** is configured for npm, GitHub Actions, and Docker updates.
 
 These are shown as pending/setup badges until the external services are connected. No fake passing badges.
 
@@ -269,6 +271,8 @@ Self-hosting runs the web dashboard, API server, and nginx reverse proxy.
 - [x] Public web and API deployment
 - [x] Codecov integration
 - [x] OpenSSF Scorecard workflow
+- [x] CodeQL static analysis
+- [x] Dependabot dependency updates
 - [ ] OpenSSF Best Practices enrollment
 - [ ] GitHub Action marketplace release
 - [ ] VS Code marketplace release
