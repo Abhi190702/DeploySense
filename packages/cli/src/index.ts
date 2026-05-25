@@ -28,7 +28,7 @@ interface Config {
 program
   .name("deploysense")
   .description("Open-source DevOps intelligence for deployment configs and logs.")
-  .version("0.1.0");
+  .version("0.1.1");
 
 program
   .command("scan")

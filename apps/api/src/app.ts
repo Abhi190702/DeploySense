@@ -40,7 +40,7 @@ app.use(rateLimit({ windowMs: 60_000, limit: 30, standardHeaders: true, legacyHe
 app.use(morgan("tiny"));
 
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", version: "0.1.0", timestamp: new Date().toISOString() });
+  res.json({ status: "ok", version: "0.1.1", timestamp: new Date().toISOString() });
 });
 
 app.post("/api/scan/dockerfile", scanRoute("dockerfile", "Dockerfile"));

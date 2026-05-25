@@ -34,14 +34,16 @@ pnpm test
 
 ## Publish Order
 
+Publish the generated tarballs, not the workspace package directories. `pnpm npm:check` creates tarballs in `.npm-packages/` and verifies that their manifests contain npm-compatible dependency versions.
+
 ```bash
-pnpm --dir packages/scanner-core publish --access public
-pnpm --dir packages/docker-scanner publish --access public
-pnpm --dir packages/github-actions-scanner publish --access public
-pnpm --dir packages/k8s-scanner publish --access public
-pnpm --dir packages/compose-scanner publish --access public
-pnpm --dir packages/log-doctor publish --access public
-pnpm --dir packages/cli publish
+npm publish .npm-packages/deploysense-scanner-core-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-docker-scanner-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-github-actions-scanner-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-k8s-scanner-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-compose-scanner-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-log-doctor-0.1.1.tgz --access public
+npm publish .npm-packages/deploysense-0.1.1.tgz
 ```
 
 ## Verify

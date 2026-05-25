@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.1
+
+- Fixed npm package metadata for direct npm publishing by replacing workspace protocol dependencies with publishable runtime versions.
+
 ## v0.1.0
 
 - First public beta release.

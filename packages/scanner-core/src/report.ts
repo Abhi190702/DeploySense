@@ -83,7 +83,7 @@ export function toTerminal(result: ScanResult, useColor = true): string {
 
   return `
   ╔═══════════════════════════════════════╗
-  ║         DeploySense v0.1.0            ║
+  ║         DeploySense v0.1.1            ║
   ║    Open-source DevOps Intelligence    ║
   ╚═══════════════════════════════════════╝
 
