@@ -1,6 +1,6 @@
 {
   "name": "@deploysense/scanner-core",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Shared rule engine, scoring, reporting, SARIF, and autofix utilities for DeploySense.",
   "license": "MIT",
   "author": "ABHIJEET RANJAN",

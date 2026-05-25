@@ -1,6 +1,6 @@
 {
   "name": "@deploysense/compose-scanner",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Docker Compose scanner rules for DeploySense.",
   "license": "MIT",
   "author": "ABHIJEET RANJAN",

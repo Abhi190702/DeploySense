@@ -2,7 +2,7 @@
   "name": "deploysense-vscode",
   "displayName": "DeploySense",
   "description": "Scan deployment configs and show DeploySense diagnostics in VS Code.",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "publisher": "deploysense",
   "engines": {
     "vscode": "^1.90.0"

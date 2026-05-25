@@ -1,6 +1,6 @@
 {
   "name": "@deploysense/k8s-scanner",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Kubernetes manifest scanner rules for DeploySense.",
   "license": "MIT",
   "author": "ABHIJEET RANJAN",

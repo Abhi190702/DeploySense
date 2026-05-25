@@ -1,6 +1,6 @@
 {
   "name": "@deploysense/github-actions-scanner",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "GitHub Actions workflow scanner rules for DeploySense.",
   "license": "MIT",
   "author": "ABHIJEET RANJAN",

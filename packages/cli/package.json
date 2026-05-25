@@ -1,6 +1,6 @@
 {
   "name": "deploysense",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "DeploySense CLI: scan Docker, Kubernetes, GitHub Actions, Compose files, and deployment logs.",
   "license": "MIT",
   "author": "ABHIJEET RANJAN",

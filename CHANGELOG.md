@@ -1,7 +1,8 @@
 # Changelog
 
-## v1.0.0
+## v0.1.0
 
+- First public beta release.
 - Added scanner-core rule engine, scoring, reports, SARIF, project reports, and auto-fix engine.
 - Added Dockerfile scanner with 12 rules.
 - Added GitHub Actions scanner with 12 rules.
