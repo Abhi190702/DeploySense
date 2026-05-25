@@ -19,7 +19,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 [![API](https://img.shields.io/website?url=https%3A%2F%2Fdeploysense-api.onrender.com%2Fapi%2Fhealth&style=for-the-badge&label=API&up_message=Live&down_message=Sleeping)](https://deploysense-api.onrender.com/api/health)
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Abhi190702/DeploySense/badge)](https://scorecard.dev/viewer/?uri=github.com/Abhi190702/DeploySense)
-[![OpenSSF Best Practices](https://img.shields.io/badge/OpenSSF%20Best%20Practices-Not%20enrolled-64748b?style=flat)](https://www.bestpractices.dev/)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12981/badge)](https://www.bestpractices.dev/projects/12981)
 [![Coverage](https://img.shields.io/badge/Coverage-91.6%25-brightgreen?style=flat)](#quality-and-security-signals)
 [![Codecov](https://codecov.io/gh/Abhi190702/DeploySense/graph/badge.svg)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
@@ -227,7 +227,7 @@ Dockerfile  GitHub Actions  Kubernetes  Docker Compose  Log Doctor
 Open-source trust signals are being added carefully:
 
 - **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns. CI publishes Scorecard results and uploads SARIF alerts.
-- **OpenSSF Best Practices** is a Linux Foundation badge program. It requires registering the project and answering project governance/security questions.
+- **OpenSSF Best Practices** is a Linux Foundation badge program. DeploySense has earned the passing badge.
 - **Codecov** shows tracked test coverage over time. The current local test suite reports **91.6%** coverage, and CI uploads `coverage/lcov.info`.
 - **CodeQL** runs static analysis for JavaScript and TypeScript.
 - **Dependabot** is configured for npm, GitHub Actions, and Docker updates.
@@ -273,7 +273,7 @@ Self-hosting runs the web dashboard, API server, and nginx reverse proxy.
 - [x] OpenSSF Scorecard workflow
 - [x] CodeQL static analysis
 - [x] Dependabot dependency updates
-- [ ] OpenSSF Best Practices enrollment
+- [x] OpenSSF Best Practices enrollment
 - [ ] GitHub Action marketplace release
 - [ ] VS Code marketplace release
 - [ ] Persistent share storage
