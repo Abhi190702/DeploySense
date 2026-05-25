@@ -1,0 +1,59 @@
+name: Publish npm packages
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish npm packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        # actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Set up pnpm
+        # pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1
+
+      - name: Set up Node.js
+        # actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and pack npm tarballs
+        run: |
+          pnpm build
+          pnpm npm:check
+
+      - name: Publish scoped runtime packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          test -n "$NODE_AUTH_TOKEN"
+          npm publish .npm-packages/deploysense-scanner-core-*.tgz --access public --provenance
+          npm publish .npm-packages/deploysense-docker-scanner-*.tgz --access public --provenance
+          npm publish .npm-packages/deploysense-github-actions-scanner-*.tgz --access public --provenance
+          npm publish .npm-packages/deploysense-k8s-scanner-*.tgz --access public --provenance
+          npm publish .npm-packages/deploysense-compose-scanner-*.tgz --access public --provenance
+          npm publish .npm-packages/deploysense-log-doctor-*.tgz --access public --provenance
+
+      - name: Publish CLI package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          test -n "$NODE_AUTH_TOKEN"
+          npm publish .npm-packages/deploysense-[0-9]*.tgz --provenance
