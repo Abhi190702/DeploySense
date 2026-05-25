@@ -1,7 +1,7 @@
 # DeploySense
 
 [![CI](https://github.com/Abhi190702/DeploySense/actions/workflows/ci.yml/badge.svg)](https://github.com/Abhi190702/DeploySense/actions/workflows/ci.yml)
-![npm](https://img.shields.io/badge/npm-publish--ready-22d3ee)
+[![npm](https://img.shields.io/npm/v/deploysense)](https://www.npmjs.com/package/deploysense)
 ![license](https://img.shields.io/badge/license-MIT-22d3ee)
 ![good first issues](https://img.shields.io/github/issues/Abhi190702/DeploySense/good%20first%20issue)
 
