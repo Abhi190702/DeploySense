@@ -3,7 +3,6 @@
 [![CI](https://github.com/Abhi190702/DeploySense/actions/workflows/ci.yml/badge.svg)](https://github.com/Abhi190702/DeploySense/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/deploysense)](https://www.npmjs.com/package/deploysense)
 ![license](https://img.shields.io/badge/license-MIT-22d3ee)
-![good first issues](https://img.shields.io/github/issues/Abhi190702/DeploySense/good%20first%20issue)
 
 > Fix deployments before they break production.
 
@@ -32,7 +31,7 @@ pnpm build
 npx deploysense scan examples/broken-dockerfiles/node-bad.Dockerfile
 ```
 
-Install globally after publishing:
+Install globally:
 
 ```bash
 npm install -g deploysense
@@ -103,7 +102,7 @@ Docker | GitHub Actions | Kubernetes | Compose | Log Doctor
 
 DeploySense is designed for contributors. Add a rule, improve the UI, write docs, or expand Log Doctor patterns.
 
-Read [CONTRIBUTING.md](./CONTRIBUTING.md) and browse [docs/good-first-issues](./docs/good-first-issues).
+Read [CONTRIBUTING.md](./CONTRIBUTING.md) to learn how the project is structured and how contributions are reviewed.
 
 ## Roadmap
 

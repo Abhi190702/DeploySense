@@ -1,7 +1,7 @@
 ---
 name: Add Scanner Rule
 about: Propose a new scanner rule
-labels: new-rule, good first issue
+labels: new-rule
 ---
 
 ## Rule ID
