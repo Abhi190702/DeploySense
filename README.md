@@ -21,7 +21,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 [![OpenSSF Scorecard](https://img.shields.io/badge/OpenSSF%20Scorecard-Pending-64748b?style=flat)](https://scorecard.dev/)
 [![OpenSSF Best Practices](https://img.shields.io/badge/OpenSSF%20Best%20Practices-Not%20enrolled-64748b?style=flat)](https://www.bestpractices.dev/)
 [![Coverage](https://img.shields.io/badge/Coverage-91.6%25-brightgreen?style=flat)](#quality-and-security-signals)
-[![Codecov](https://img.shields.io/badge/Codecov-Setup%20next-64748b?style=flat&logo=codecov)](https://codecov.io/gh/Abhi190702/DeploySense)
+[![Codecov](https://codecov.io/gh/Abhi190702/DeploySense/graph/badge.svg)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
 
 </div>
@@ -228,7 +228,7 @@ Open-source trust signals are being added carefully:
 
 - **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns.
 - **OpenSSF Best Practices** is a Linux Foundation badge program. It requires registering the project and answering project governance/security questions.
-- **Codecov** shows tracked test coverage over time. The current local test suite reports **91.6%** coverage; Codecov upload is the next CI integration step.
+- **Codecov** shows tracked test coverage over time. The current local test suite reports **91.6%** coverage, and CI uploads `coverage/lcov.info`.
 
 These are shown as pending/setup badges until the external services are connected. No fake passing badges.
 
