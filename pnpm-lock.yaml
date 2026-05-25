@@ -11,9 +11,6 @@ importers:
       '@types/node':
         specifier: ^20.14.10
         version: 20.19.41
-      deploysense:
-        specifier: workspace:*
-        version: link:packages/cli
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

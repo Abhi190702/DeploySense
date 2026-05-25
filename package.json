@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@types/node": "^20.14.10",
-    "deploysense": "workspace:*",
     "typescript": "^5.7.2"
   }
 }
