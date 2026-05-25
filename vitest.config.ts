@@ -6,7 +6,7 @@ export default defineConfig({
     include: ["packages/**/*.test.ts", "apps/**/*.test.ts"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "json-summary"],
+      reporter: ["text", "json-summary", "lcov"],
       include: [
         "packages/scanner-core/src/{autofix,engine,project,report,sarif,scoring}.ts",
         "packages/docker-scanner/src/**/*.ts",
