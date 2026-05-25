@@ -8,22 +8,22 @@ importers:
 
   .:
     dependencies:
-      deploysense:
-        specifier: workspace:*
-        version: link:packages/cli
-    devDependencies:
       '@types/node':
         specifier: ^20.14.10
         version: 20.19.41
+      deploysense:
+        specifier: workspace:*
+        version: link:packages/cli
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.3
+    devDependencies:
       '@vitest/coverage-v8':
         specifier: ^2.1.8
         version: 2.1.9(vitest@2.1.9(@types/node@20.19.41))
       tsx:
         specifier: ^4.19.2
         version: 4.22.3
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
       vitest:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@20.19.41)
@@ -48,6 +48,15 @@ importers:
       '@deploysense/scanner-core':
         specifier: workspace:*
         version: link:../../packages/scanner-core
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.19
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.25
+      '@types/morgan':
+        specifier: ^1.9.9
+        version: 1.9.10
       cors:
         specifier: ^2.8.5
         version: 2.8.6
@@ -70,15 +79,6 @@ importers:
         specifier: ^3.24.1
         version: 3.25.76
     devDependencies:
-      '@types/cors':
-        specifier: ^2.8.17
-        version: 2.8.19
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.25
-      '@types/morgan':
-        specifier: ^1.9.9
-        version: 1.9.10
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.3
