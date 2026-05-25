@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { randomBytes } from "node:crypto";
 import type { ScanResult } from "@deploysense/scanner-core";
 
 interface StoredScan {
@@ -17,7 +17,7 @@ const shareTtlMs = 7 * 24 * 60 * 60 * 1000;
 
 export function storeScan(result: ScanResult): ScanResult & { scanId: string } {
   prune();
-  const scanId = nanoid(8);
+  const scanId = shortId(8);
   const stored = { ...result, scanId };
   scans.set(scanId, { scanId, result: stored, createdAt: Date.now() });
   while (scans.size > maxEntries) {
@@ -44,7 +44,7 @@ export function recentScans(): ScanResult[] {
 export function shareScan(scanId: string): string | undefined {
   const item = scans.get(scanId);
   if (!item) return undefined;
-  const shareToken = nanoid(10);
+  const shareToken = shortId(10);
   item.shareToken = shareToken;
   item.sharedAt = Date.now();
   shares.set(shareToken, scanId);
@@ -67,4 +67,10 @@ function prune() {
       if (item.shareToken) shares.delete(item.shareToken);
     }
   }
+}
+
+function shortId(length: number) {
+  return randomBytes(Math.ceil(length * 0.75))
+    .toString("base64url")
+    .slice(0, length);
 }
