@@ -2,9 +2,27 @@
   "name": "@deploysense/scanner-core",
   "version": "1.0.0",
   "description": "Shared rule engine, scoring, reporting, SARIF, and autofix utilities for DeploySense.",
+  "license": "MIT",
+  "author": "ABHIJEET RANJAN",
+  "homepage": "https://github.com/Abhi190702/DeploySense#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi190702/DeploySense.git",
+    "directory": "packages/scanner-core"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhi190702/DeploySense/issues"
+  },
+  "keywords": ["devops", "scanner", "rules", "sarif", "autofix"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

@@ -2,9 +2,27 @@
   "name": "@deploysense/log-doctor",
   "version": "1.0.0",
   "description": "Pattern-based deployment log diagnosis for DeploySense.",
+  "license": "MIT",
+  "author": "ABHIJEET RANJAN",
+  "homepage": "https://github.com/Abhi190702/DeploySense#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi190702/DeploySense.git",
+    "directory": "packages/log-doctor"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhi190702/DeploySense/issues"
+  },
+  "keywords": ["devops", "logs", "kubernetes", "docker", "diagnostics"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

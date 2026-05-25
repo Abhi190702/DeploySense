@@ -2,10 +2,34 @@
   "name": "deploysense",
   "version": "1.0.0",
   "description": "DeploySense CLI: scan Docker, Kubernetes, GitHub Actions, Compose files, and deployment logs.",
+  "license": "MIT",
+  "author": "ABHIJEET RANJAN",
+  "homepage": "https://github.com/Abhi190702/DeploySense#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi190702/DeploySense.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhi190702/DeploySense/issues"
+  },
+  "keywords": [
+    "devops",
+    "docker",
+    "kubernetes",
+    "github-actions",
+    "docker-compose",
+    "scanner",
+    "sarif",
+    "cli"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "deploysense": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "files": ["dist"],
   "scripts": {

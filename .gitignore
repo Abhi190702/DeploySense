@@ -1,9 +1,12 @@
 node_modules/
+.pnpm-store/
 coverage/
 dist/
 .next/
 *.tsbuildinfo
 *.log
+.npm-packages/
+*.tgz
 .env
 .env.*
 !.env.example

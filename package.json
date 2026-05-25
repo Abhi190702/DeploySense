@@ -10,6 +10,7 @@
     "dev:web": "pnpm --filter web dev",
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm typecheck",
+    "npm:check": "node scripts/check-npm-packages.mjs",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "docs:generate": "tsx packages/scanner-core/src/generateDocs.ts"

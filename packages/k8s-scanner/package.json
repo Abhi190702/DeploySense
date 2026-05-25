@@ -2,9 +2,27 @@
   "name": "@deploysense/k8s-scanner",
   "version": "1.0.0",
   "description": "Kubernetes manifest scanner rules for DeploySense.",
+  "license": "MIT",
+  "author": "ABHIJEET RANJAN",
+  "homepage": "https://github.com/Abhi190702/DeploySense#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi190702/DeploySense.git",
+    "directory": "packages/k8s-scanner"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhi190702/DeploySense/issues"
+  },
+  "keywords": ["devops", "kubernetes", "k8s", "yaml", "scanner"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

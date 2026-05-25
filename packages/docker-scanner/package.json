@@ -2,9 +2,27 @@
   "name": "@deploysense/docker-scanner",
   "version": "1.0.0",
   "description": "Dockerfile scanner rules for DeploySense.",
+  "license": "MIT",
+  "author": "ABHIJEET RANJAN",
+  "homepage": "https://github.com/Abhi190702/DeploySense#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi190702/DeploySense.git",
+    "directory": "packages/docker-scanner"
+  },
+  "bugs": {
+    "url": "https://github.com/Abhi190702/DeploySense/issues"
+  },
+  "keywords": ["devops", "docker", "dockerfile", "scanner", "security"],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
