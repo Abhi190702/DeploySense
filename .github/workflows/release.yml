@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  github-release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        # actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Write release notes
+        run: |
+          cat > release-notes.md <<'NOTES'
+          DeploySense v0.1.1 is the first public npm-backed release.
+
+          Highlights:
+          - Published CLI package: `npx deploysense scan <file>`
+          - Docker, GitHub Actions, Kubernetes, Compose, and log scanners
+          - Web dashboard and Express API deployments
+          - SARIF output, OpenSSF Best Practices, CodeQL, Scorecard, Dependabot, and Codecov setup
+
+          Install:
+
+          ```bash
+          npm install -g deploysense
+          deploysense scan .
+          ```
+          NOTES
+
+      - name: Publish release
+        # softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+        with:
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
