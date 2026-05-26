@@ -1,4 +1,6 @@
 export type Severity = "critical" | "high" | "medium" | "low" | "info";
+export type FixFeasibility = "high" | "medium" | "low" | "manual";
+export type FalsePositiveRisk = "low" | "medium" | "high";
 
 export type RiskCategory =
   | "security"
@@ -31,6 +33,10 @@ export interface Issue {
   diffPreview?: string;
   docsUrl?: string;
   tags?: string[];
+  confidence?: number; // 0-1, where 1 means high confidence.
+  fixFeasibility?: FixFeasibility;
+  falsePositiveRisk?: FalsePositiveRisk;
+  evidence?: string[];
   autoFixable: boolean;
 }
 
@@ -92,6 +98,7 @@ export interface RuleInput {
   filePath: string;
   lines: string[];
   parsed?: unknown;
+  context?: Record<string, unknown>;
 }
 
 export interface RuleOutput {
