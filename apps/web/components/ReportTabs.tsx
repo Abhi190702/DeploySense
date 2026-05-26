@@ -68,7 +68,7 @@ export function ReportTabs({ result }: { result: ScanResult }) {
       ) : null}
       <div className="flex flex-wrap gap-3 border-t border-zinc-800 pt-5">
         <button className="rounded bg-cyan-400 px-4 py-2 text-sm font-semibold text-zinc-950" onClick={() => navigator.clipboard.writeText(toMarkdownLite(result))}>Copy Markdown Report</button>
-        <button className="rounded border border-zinc-700 px-4 py-2 text-sm text-zinc-100" onClick={() => navigator.clipboard.writeText(JSON.stringify(result, null, 2))}>Download JSON Report</button>
+        <button className="rounded border border-zinc-700 px-4 py-2 text-sm text-zinc-100" onClick={() => navigator.clipboard.writeText(JSON.stringify(result, null, 2))}>Copy JSON Report</button>
         <button className="rounded border border-zinc-700 px-4 py-2 text-sm text-zinc-100" onClick={() => navigator.clipboard.writeText(toGithubComment(result))}>Copy GitHub Comment</button>
       </div>
     </section>

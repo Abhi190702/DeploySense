@@ -1,13 +1,15 @@
 import Link from "next/link";
+import { Boxes, GitBranch, Network, ShieldCheck } from "lucide-react";
 import { GitHubStarButton } from "@/components/GitHubStarButton";
 import { TerminalOutput } from "@/components/TerminalOutput";
 
 const terminalLines = [
   "$ deploysense scan .",
-  "Scanning Dockerfile, compose, Kubernetes, GitHub Actions...",
+  "Scanning Dockerfile, Compose, Kubernetes, GitHub Actions...",
+  "Architecture: 9 nodes, 11 links, 3 insights",
   "Overall score: 76/100 [B]",
-  "Top issue: K8S_NO_RESOURCE_LIMITS",
-  "Fix: add CPU and memory limits before production"
+  "Top issue: ARCH_MUTABLE_IMAGE_CHAIN",
+  "Fix: pin images across CI, Docker, and runtime manifests"
 ];
 
 export default function HomePage() {
@@ -24,7 +26,7 @@ export default function HomePage() {
             <Link href="/scan" className="rounded bg-cyan-400 px-5 py-3 font-semibold text-zinc-950">Try Live Scanner</Link>
             <a href="https://github.com/Abhi190702/DeploySense" className="rounded border border-zinc-700 px-5 py-3 font-semibold text-zinc-100 hover:border-cyan-400">View on GitHub</a>
           </div>
-          <p className="mt-5 text-sm text-zinc-500">Used by 500+ developers · Open Source · Free Forever</p>
+          <p className="mt-5 text-sm text-zinc-500">Open source · CLI + Web + API · Built for contributor-friendly DevOps analysis</p>
         </div>
         <TerminalOutput lines={terminalLines} />
       </section>
@@ -36,9 +38,12 @@ export default function HomePage() {
             {[
               ["3 AM Docker failures", "Catch root users, floating tags, bad cache order, missing health checks."],
               ["CI that randomly fails", "Spot missing checkout, no cache, no tests, broad permissions, and unpinned actions."],
-              ["Kubernetes mysteries", "Find missing probes, limits, requests, labels, namespaces, and bad service ports."]
-            ].map(([title, body]) => (
+              ["Architecture drift", "Connect CI, Dockerfiles, images, Kubernetes workloads, services, and Compose dependencies."]
+            ].map(([title, body], index) => (
               <article key={title} className="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded border border-zinc-800 bg-zinc-950 text-cyan-300">
+                  {index === 0 ? <Boxes className="h-4 w-4" /> : index === 1 ? <GitBranch className="h-4 w-4" /> : <Network className="h-4 w-4" />}
+                </div>
                 <h3 className="font-semibold text-cyan-200">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-zinc-400">{body}</p>
               </article>
@@ -52,7 +57,7 @@ export default function HomePage() {
           <div>
             <h2 className="text-3xl font-bold">How it works</h2>
             <div className="mt-6 space-y-4">
-              {["Paste or upload your config file.", "DeploySense runs 46+ rules across deployment surfaces.", "Get scores, risk categories, explanations, and safe fixes."].map((step, index) => (
+              {["Paste a file or scan a project bundle.", "DeploySense runs 54+ rules and builds an architecture graph.", "Get scores, cross-file insights, explanations, and safe fixes."].map((step, index) => (
                 <div key={step} className="flex gap-4 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-cyan-400 font-bold text-zinc-950">{index + 1}</span>
                   <p className="text-zinc-300">{step}</p>
@@ -63,9 +68,16 @@ export default function HomePage() {
           <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
             <h2 className="text-2xl font-bold">Supported scanners</h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {["Dockerfile · 12 rules", "GitHub Actions · 12 rules", "Kubernetes · 12 rules", "Docker Compose · 10 rules"].map((item) => (
+              {["Dockerfile · 20 rules", "GitHub Actions · 12 rules", "Kubernetes · 12 rules", "Docker Compose · 10 rules"].map((item) => (
                 <div key={item} className="rounded border border-zinc-800 bg-zinc-950 p-4 font-mono text-sm text-cyan-200">{item}</div>
               ))}
+            </div>
+            <div className="mt-5 rounded border border-emerald-400/30 bg-emerald-400/10 p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-emerald-200">
+                <ShieldCheck className="h-4 w-4" />
+                New architecture insights
+              </div>
+              <p className="mt-2 text-sm leading-6 text-zinc-400">Project scans now identify weak links across pipelines, image builds, runtime manifests, services, and secret boundaries.</p>
             </div>
             <div className="mt-6">
               <GitHubStarButton />

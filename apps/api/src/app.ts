@@ -5,7 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { z } from "zod";
 import { analyzeLog } from "@deploysense/log-doctor";
-import { applyFixes, createProjectReport, toSarif } from "@deploysense/scanner-core";
+import { analyzeArchitecture, applyFixes, createProjectReport, toSarif } from "@deploysense/scanner-core";
 import { listComposeRules } from "@deploysense/compose-scanner";
 import { listDockerRules, scanDockerfile } from "@deploysense/docker-scanner";
 import { listGithubActionsRules } from "@deploysense/github-actions-scanner";
@@ -62,7 +62,7 @@ app.post("/api/scan/project", (req, res, next) => {
   try {
     const body = projectSchema.parse(req.body);
     const results = body.files.map((file) => storeScan(scanByType(detectScanner(file.name, file.content), file.content, file.name)));
-    res.json(createProjectReport(results, "api-upload"));
+    res.json(createProjectReport(results, "api-upload", analyzeArchitecture(body.files, results)));
   } catch (error) {
     next(error);
   }

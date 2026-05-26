@@ -32,7 +32,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 
 **DeploySense** scans deployment configuration before it reaches production and returns health scores, risk categories, plain-English explanations, and concrete fixes. It is built for developers who want a fast local CLI, maintainers who want CI guardrails, and teams who want a lightweight web dashboard for reviewing deployment risk.
 
-DeploySense currently covers Dockerfiles, GitHub Actions workflows, Kubernetes manifests, Docker Compose files, and deployment logs. The scanner engine is rule-based and contributor-friendly: every issue includes severity, category, why it matters, how to fix it, examples, and SARIF-compatible output for security tooling.
+DeploySense currently covers Dockerfiles, GitHub Actions workflows, Kubernetes manifests, Docker Compose files, and deployment logs. Project scans now also build a lightweight architecture graph that connects pipelines, Dockerfiles, image references, workloads, services, and exposed endpoints. The scanner engine is rule-based and contributor-friendly: every issue includes severity, category, why it matters, how to fix it, examples, and SARIF-compatible output for security tooling.
 
 Live product links:
 
@@ -87,6 +87,7 @@ npx deploysense scan . --fail-on high --sarif
 | Health score, grade, and status | Ready |
 | Severity and category scoring | Ready |
 | CLI scanner and project scan | Ready |
+| Cross-file architecture graph | Ready |
 | Express API server | Ready |
 | Next.js web dashboard | Ready |
 | SARIF output for code scanning | Ready |
@@ -152,7 +153,7 @@ Set the API URL when deploying:
 NEXT_PUBLIC_API_URL=https://deploysense-api.onrender.com
 ```
 
-The dashboard includes a scan workspace, Monaco editor, rules explorer, docs, contribution page, badge generator, and shared report pages.
+The dashboard includes a scan workspace, Monaco editor, project architecture view, rules explorer, docs, contribution page, badge generator, and shared report pages.
 
 -----
 
@@ -219,6 +220,15 @@ The GitHub Action is built, but it still needs real-world PR testing before mark
    |             |             |              |             |
 Dockerfile  GitHub Actions  Kubernetes  Docker Compose  Log Doctor
 ```
+
+For project scans, DeploySense also builds an architecture graph:
+
+```text
+GitHub Actions -> Dockerfile -> Image -> Kubernetes Deployment -> Service / Ingress
+                         \-> Docker Compose service dependencies
+```
+
+This powers cross-file insights such as mutable image chains, missing deployment pipelines, weak build/runtime linkage, incomplete health signals, and secret exposure paths.
 
 -----
 
