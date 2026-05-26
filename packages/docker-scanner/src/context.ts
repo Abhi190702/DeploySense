@@ -130,6 +130,7 @@ function hasAnyPattern(patterns: string[], expected: string[]): boolean {
   const normalized = patterns.map((pattern) => pattern.replace(/\\/g, "/").replace(/^\//, "").toLowerCase());
   return expected.some((hint) => {
     const needle = hint.toLowerCase();
-    return normalized.some((pattern) => pattern === needle || pattern.includes(needle.replace("*", "")));
+    const searchableNeedle = needle.split("*").join("");
+    return normalized.some((pattern) => pattern === needle || pattern.includes(searchableNeedle));
   });
 }

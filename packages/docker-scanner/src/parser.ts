@@ -84,5 +84,8 @@ function parseFlags(argumentsText: string): string[] {
   return argumentsText
     .split(/\s+/)
     .filter((part) => part.startsWith("--"))
-    .map((part) => part.replace(/=.*$/, ""));
+    .map((part) => {
+      const valueSeparator = part.indexOf("=");
+      return valueSeparator === -1 ? part : part.slice(0, valueSeparator);
+    });
 }

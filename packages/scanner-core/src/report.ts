@@ -55,8 +55,9 @@ export function toJson(result: ScanResult | ProjectReport): string {
 }
 
 export function toMarkdown(result: ScanResult): string {
+  const escapeMarkdownTableCell = (value: string): string => value.split("\\").join("\\\\").split("|").join("\\|");
   const rows = result.issues
-    .map((issue) => `| ${issue.severity} | ${issue.id} | ${issue.file}:${issue.line ?? "file-level"} | ${issue.fix.replace(/\|/g, "\\|")} |`)
+    .map((issue) => `| ${issue.severity} | ${issue.id} | ${issue.file}:${issue.line ?? "file-level"} | ${escapeMarkdownTableCell(issue.fix)} |`)
     .join("\n");
 
   return `# DeploySense Report
