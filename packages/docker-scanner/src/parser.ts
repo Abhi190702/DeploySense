@@ -3,6 +3,8 @@ export interface DockerInstruction {
   arguments: string;
   lineNumber: number;
   raw: string;
+  flags: string[];
+  stageIndex?: number;
 }
 
 export interface ParsedDockerfile {
@@ -10,16 +12,21 @@ export interface ParsedDockerfile {
   from: DockerInstruction[];
   run: DockerInstruction[];
   copy: DockerInstruction[];
+  add: DockerInstruction[];
   env: DockerInstruction[];
+  arg: DockerInstruction[];
+  label: DockerInstruction[];
   user: DockerInstruction[];
   workdir: DockerInstruction[];
   expose: DockerInstruction[];
   healthcheck: DockerInstruction[];
   cmd: DockerInstruction[];
   entrypoint: DockerInstruction[];
+  shell: DockerInstruction[];
+  volume: DockerInstruction[];
 }
 
-const known = new Set(["FROM", "RUN", "COPY", "ADD", "ENV", "USER", "WORKDIR", "EXPOSE", "HEALTHCHECK", "CMD", "ENTRYPOINT"]);
+const known = new Set(["FROM", "RUN", "COPY", "ADD", "ENV", "ARG", "LABEL", "USER", "WORKDIR", "EXPOSE", "HEALTHCHECK", "CMD", "ENTRYPOINT", "SHELL", "VOLUME", "STOPSIGNAL", "ONBUILD"]);
 
 export function parseDockerfile(content: string): ParsedDockerfile {
   const instructions: DockerInstruction[] = [];
@@ -39,11 +46,14 @@ export function parseDockerfile(content: string): ParsedDockerfile {
     }
     const match = logical.match(/^([A-Za-z]+)\s+(.*)$/);
     if (match && known.has(match[1].toUpperCase())) {
+      const instruction = match[1].toUpperCase();
       instructions.push({
-        instruction: match[1].toUpperCase(),
+        instruction,
         arguments: match[2].trim(),
         lineNumber: startLine,
-        raw: logical
+        raw: logical,
+        flags: parseFlags(match[2]),
+        stageIndex: instruction === "FROM" ? instructions.filter((item) => item.instruction === "FROM").length : undefined
       });
     }
     logical = "";
@@ -55,12 +65,24 @@ export function parseDockerfile(content: string): ParsedDockerfile {
     from: byName("FROM"),
     run: byName("RUN"),
     copy: byName("COPY"),
+    add: byName("ADD"),
     env: byName("ENV"),
+    arg: byName("ARG"),
+    label: byName("LABEL"),
     user: byName("USER"),
     workdir: byName("WORKDIR"),
     expose: byName("EXPOSE"),
     healthcheck: byName("HEALTHCHECK"),
     cmd: byName("CMD"),
-    entrypoint: byName("ENTRYPOINT")
+    entrypoint: byName("ENTRYPOINT"),
+    shell: byName("SHELL"),
+    volume: byName("VOLUME")
   };
+}
+
+function parseFlags(argumentsText: string): string[] {
+  return argumentsText
+    .split(/\s+/)
+    .filter((part) => part.startsWith("--"))
+    .map((part) => part.replace(/=.*$/, ""));
 }

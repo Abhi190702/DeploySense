@@ -20,7 +20,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Abhi190702/DeploySense/badge)](https://scorecard.dev/viewer/?uri=github.com/Abhi190702/DeploySense)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12981/badge)](https://www.bestpractices.dev/projects/12981)
-[![Coverage](https://img.shields.io/badge/Coverage-91.6%25-brightgreen?style=flat)](#quality-and-security-signals)
+[![Coverage](https://img.shields.io/badge/Coverage-94.23%25-brightgreen?style=flat)](#quality-and-security-signals)
 [![Codecov](https://codecov.io/gh/Abhi190702/DeploySense/graph/badge.svg)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
 
@@ -72,7 +72,7 @@ npx deploysense scan . --fail-on high --sarif
 
 | Scanner | Rules | Examples |
 |---|---:|---|
-| Dockerfile | 12 | `latest` tags, root user, missing healthcheck, bad layer cache, secrets in `ENV` |
+| Dockerfile | 20 | `latest` tags, digest pinning, root user, missing healthcheck, secret files, unsafe remote downloads, package-manager hygiene |
 | GitHub Actions | 12 | missing checkout, unpinned actions, broad permissions, missing cache, missing timeouts |
 | Kubernetes | 12 | missing resource limits, missing probes, privileged containers, single replica deployments |
 | Docker Compose | 10 | exposed database ports, hardcoded secrets, duplicate host ports, missing restart policies |
@@ -228,7 +228,7 @@ Open-source trust signals are being added carefully:
 
 - **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns. CI publishes Scorecard results and uploads SARIF alerts.
 - **OpenSSF Best Practices** is a Linux Foundation badge program. DeploySense has earned the passing badge.
-- **Codecov** shows tracked test coverage over time. The current local test suite reports **91.6%** coverage, and CI uploads `coverage/lcov.info`.
+- **Codecov** shows tracked test coverage over time. The current local test suite reports **94.23%** coverage, and CI uploads `coverage/lcov.info`.
 - **CodeQL** runs static analysis for JavaScript and TypeScript.
 - **Dependabot** is configured for npm, GitHub Actions, and Docker updates.
 

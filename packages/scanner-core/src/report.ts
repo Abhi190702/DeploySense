@@ -35,14 +35,19 @@ function bar(score: number): string {
 
 function issueLine(issue: Issue): string {
   const sev = severityColors[issue.severity];
-  const loc = issue.line ? `Line: ${issue.line}` : "Line: -";
+  const loc = issue.line ? `Line: ${issue.line}` : "Location: file-level";
+  const metadata = [
+    issue.confidence !== undefined ? `Confidence: ${Math.round(issue.confidence * 100)}%` : undefined,
+    issue.fixFeasibility ? `Fix feasibility: ${issue.fixFeasibility}` : undefined
+  ].filter(Boolean).join("   ");
   return [
     `${sev}[${issue.severity.toUpperCase()}]${color.reset} ${color.bold}${issue.id}${color.reset}`,
     issue.title,
     `${loc}${issue.line ? ` -> ${issue.badExample ?? ""}` : ""}`,
+    metadata,
     `Why: ${issue.why}`,
     `Fix: ${issue.fix}`
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 }
 
 export function toJson(result: ScanResult | ProjectReport): string {
@@ -51,7 +56,7 @@ export function toJson(result: ScanResult | ProjectReport): string {
 
 export function toMarkdown(result: ScanResult): string {
   const rows = result.issues
-    .map((issue) => `| ${issue.severity} | ${issue.id} | ${issue.file}:${issue.line ?? "-"} | ${issue.fix.replace(/\|/g, "\\|")} |`)
+    .map((issue) => `| ${issue.severity} | ${issue.id} | ${issue.file}:${issue.line ?? "file-level"} | ${issue.fix.replace(/\|/g, "\\|")} |`)
     .join("\n");
 
   return `# DeploySense Report
