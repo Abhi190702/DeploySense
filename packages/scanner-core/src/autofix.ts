@@ -25,30 +25,34 @@ type Fixer = (content: string, issue: Issue) => { content: string; fix?: Applied
 
 const fixers: Record<string, Fixer> = {
   DOCKER_LATEST_TAG(content, issue) {
-    return replaceLine(content, issue, /:latest\b/, ":stable", "Replace latest tag with a stable tag placeholder");
+    return replaceLineContent(content, issue, (line) => replaceCaseInsensitive(line, ":latest", ":stable"), "Replace latest tag with a stable tag placeholder");
   },
   DOCKER_APT_NO_CLEAN(content, issue) {
-    return replaceLine(
-      content,
-      issue,
-      /RUN (.*apt-get install.*)$/i,
-      (_match, command) => `RUN ${command} && rm -rf /var/lib/apt/lists/*`,
-      "Clean apt package lists after install"
-    );
+    return replaceLineContent(content, issue, (line) => {
+      if (!containsIgnoreCase(line, "apt-get install") && !containsIgnoreCase(line, "apt install")) return line;
+      let next = line;
+      if (!containsIgnoreCase(next, "--no-install-recommends")) {
+        next = replaceCaseInsensitive(next, "install", "install --no-install-recommends");
+      }
+      if (!next.includes("/var/lib/apt/lists/*")) {
+        next = `${next} && rm -rf /var/lib/apt/lists/*`;
+      }
+      return next;
+    }, "Clean apt package lists after install");
   },
   DOCKER_MULTIPLE_RUN_COMMANDS(content, issue) {
-    const lines = content.split(/\r?\n/);
+    const lines = splitLines(content);
     const start = Math.max((issue.line ?? 1) - 1, 0);
     const runLines = lines.slice(start, start + 3);
-    if (runLines.length < 3 || !runLines.every((line) => /^\s*RUN\s+/i.test(line))) {
+    if (runLines.length < 3 || !runLines.every(isRunInstruction)) {
       return { content };
     }
-    const replacement = `RUN ${runLines.map((line) => line.replace(/^\s*RUN\s+/i, "").trim()).join(" && \\\n    ")}`;
+    const replacement = `RUN ${runLines.map((line) => stripRunInstruction(line).trim()).join(" && \\\n    ")}`;
     lines.splice(start, 3, replacement);
     return { content: lines.join("\n"), fix: applied(issue, runLines.join("\n"), replacement, "Merge consecutive RUN commands") };
   },
   GHA_NO_TIMEOUT(content, issue) {
-    const lines = content.split(/\r?\n/);
+    const lines = splitLines(content);
     const jobLine = Math.max((issue.line ?? 1) - 1, 0);
     lines.splice(jobLine + 1, 0, "    timeout-minutes: 30");
     return { content: lines.join("\n"), fix: applied(issue, "", "timeout-minutes: 30", "Add job timeout") };
@@ -58,13 +62,16 @@ const fixers: Record<string, Fixer> = {
     return { content: `${block}${content}`, fix: applied(issue, "", block.trim(), "Add concurrency cancellation") };
   },
   K8S_SINGLE_REPLICA(content, issue) {
-    if (/replicas:\s*1\b/.test(content)) {
-      return replaceLine(content, issue, /replicas:\s*1\b/, "replicas: 2", "Increase replicas to 2");
-    }
-    return { content: content.replace(/(kind:\s*Deployment[\s\S]*?spec:\n)/, "$1  replicas: 2\n"), fix: applied(issue, "", "replicas: 2", "Add replicas") };
+    return replaceLineContent(content, issue, (line) => {
+      const keyIndex = line.indexOf("replicas:");
+      if (keyIndex === -1) return line;
+      const value = line.slice(keyIndex + "replicas:".length).trim();
+      if (value !== "1") return line;
+      return `${line.slice(0, keyIndex)}replicas: 2`;
+    }, "Increase replicas to 2");
   },
   COMPOSE_NO_RESTART_POLICY(content, issue) {
-    const lines = content.split(/\r?\n/);
+    const lines = splitLines(content);
     const line = Math.max((issue.line ?? 1) - 1, 0);
     lines.splice(line + 1, 0, "    restart: unless-stopped");
     return { content: lines.join("\n"), fix: applied(issue, "", "restart: unless-stopped", "Add restart policy") };
@@ -84,6 +91,11 @@ export function applyFixes(content: string, issues: Issue[], ruleIds?: string[])
       skippedFixes.push({ ruleId: issue.id, reason: "No safe auto-fix is available" });
       continue;
     }
+    const safetyReason = safetyBlocker(fixed, issue);
+    if (safetyReason) {
+      skippedFixes.push({ ruleId: issue.id, reason: safetyReason });
+      continue;
+    }
     const before = fixed;
     const result = fixer(fixed, issue);
     fixed = result.content;
@@ -100,20 +112,75 @@ export function applyFixes(content: string, issues: Issue[], ruleIds?: string[])
   };
 }
 
-function replaceLine(
+function replaceLineContent(
   content: string,
   issue: Issue,
-  search: RegExp,
-  replacement: string | ((substring: string, ...args: string[]) => string),
+  transform: (line: string) => string,
   description: string
 ) {
-  const lines = content.split(/\r?\n/);
+  const lines = splitLines(content);
   const index = Math.max((issue.line ?? 1) - 1, 0);
   const original = lines[index] ?? "";
-  const next = original.replace(search, replacement as string);
+  const next = transform(original);
   if (next === original) return { content };
   lines[index] = next;
   return { content: lines.join("\n"), fix: applied(issue, original, next, description) };
+}
+
+function safetyBlocker(content: string, issue: Issue): string | undefined {
+  if (issue.id.startsWith("DOCKER_") && content.includes("<<")) {
+    return "Skipped because this Dockerfile uses a here-doc or complex shell block; review the suggested fix manually.";
+  }
+  if ((issue.id.startsWith("GHA_") || issue.id.startsWith("K8S_") || issue.id.startsWith("COMPOSE_")) && hasYamlAnchors(content)) {
+    return "Skipped because this YAML uses anchors or aliases; AST-preserving YAML edits are required.";
+  }
+  return undefined;
+}
+
+function hasYamlAnchors(content: string): boolean {
+  const words = content.split(" ");
+  return words.some((word) => word.startsWith("&") || word.startsWith("*") || word.includes(":&") || word.includes(":*"));
+}
+
+function splitLines(value: string): string[] {
+  const lines: string[] = [];
+  let current = "";
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    if (char === "\n") {
+      lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
+  return lines;
+}
+
+function isRunInstruction(line: string): boolean {
+  return stripLeadingWhitespace(line).toUpperCase().startsWith("RUN ");
+}
+
+function stripRunInstruction(line: string): string {
+  const trimmed = stripLeadingWhitespace(line);
+  return isRunInstruction(line) ? trimmed.slice(4) : line;
+}
+
+function stripLeadingWhitespace(value: string): string {
+  let index = 0;
+  while (index < value.length && (value[index] === " " || value[index] === "\t")) index += 1;
+  return value.slice(index);
+}
+
+function containsIgnoreCase(source: string, needle: string): boolean {
+  return source.toLowerCase().includes(needle.toLowerCase());
+}
+
+function replaceCaseInsensitive(source: string, needle: string, replacement: string): string {
+  const index = source.toLowerCase().indexOf(needle.toLowerCase());
+  if (index === -1) return source;
+  return `${source.slice(0, index)}${replacement}${source.slice(index + needle.length)}`;
 }
 
 function applied(issue: Issue, original: string, replacement: string, description: string): AppliedFix {

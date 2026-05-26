@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasAnyShellCommand, hasAptListCleanup, hasShellOption } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const aptNoCleanRule: Rule = {
@@ -11,8 +12,8 @@ export const aptNoCleanRule: Rule = {
   check(input) {
     return {
       issues: docker(input).run
-        .filter((item) => /apt-get\s+install/i.test(item.arguments))
-        .filter((item) => !/rm\s+-rf\s+\/var\/lib\/apt\/lists\/\*/.test(item.arguments) || !/--no-install-recommends/.test(item.arguments))
+        .filter((item) => hasAnyShellCommand(item.arguments, [["apt-get", "install"], ["apt", "install"]]))
+        .filter((item) => !hasAptListCleanup(item.arguments) || !hasShellOption(item.arguments, "--no-install-recommends"))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "apt-get install should avoid recommended packages and clean apt lists.",

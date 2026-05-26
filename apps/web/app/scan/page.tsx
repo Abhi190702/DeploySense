@@ -217,6 +217,20 @@ function LogReport({ result }: { result: any }) {
     <section className="mt-8 space-y-4">
       <h2 className="text-2xl font-bold">Log Doctor</h2>
       <p className="text-zinc-400">{result.summary}</p>
+      {result.correlations?.length ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          {result.correlations.map((item: any) => (
+            <article key={item.id} className="rounded-lg border border-orange-500/30 bg-orange-500/10 p-4">
+              <div className="text-xs uppercase tracking-wide text-orange-200">Failure chain · {Math.round(item.confidence * 100)}% confidence</div>
+              <h3 className="mt-2 font-semibold text-orange-100">{item.title}</h3>
+              <p className="mt-2 text-sm text-zinc-300">{item.diagnosis}</p>
+              <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-zinc-300">
+                {item.recommendedPath.map((step: string) => <li key={step}>{step}</li>)}
+              </ol>
+            </article>
+          ))}
+        </div>
+      ) : null}
       {result.findings.map((finding: any) => (
         <article key={`${finding.pattern}-${finding.lineNumber}`} className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
           <h3 className="font-semibold text-cyan-200">{finding.title}</h3>

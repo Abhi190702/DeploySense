@@ -25,6 +25,8 @@ pnpm test
 - Prefer parsers over fragile string matching when data is structured.
 - Explain risk in plain English.
 - Keep auto-fixes conservative.
+- Add tests for major new behavior, especially new rules, parser changes, auto-fixes, and API endpoints.
+- Avoid regexes that can backtrack heavily on user-controlled input. Prefer tokenizers, parsed YAML objects, or explicit character scans for hot paths.
 
 ## Pull Requests
 

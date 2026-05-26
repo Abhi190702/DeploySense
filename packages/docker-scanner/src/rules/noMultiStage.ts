@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { looksBuildHeavyBase } from "../image";
 import { docker, issue } from "./helpers";
 
 export const noMultiStageRule: Rule = {
@@ -11,7 +12,7 @@ export const noMultiStageRule: Rule = {
   check(input) {
     const parsed = docker(input);
     const first = parsed.from[0]?.arguments ?? "";
-    const looksBuildHeavy = /(node|openjdk|maven|gradle|eclipse-temurin)/i.test(first);
+    const looksBuildHeavy = looksBuildHeavyBase(first);
     if (!looksBuildHeavy || parsed.from.length > 1) return { issues: [] };
     return {
       issues: [issue(input, {

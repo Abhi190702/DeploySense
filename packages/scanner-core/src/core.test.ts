@@ -87,4 +87,10 @@ describe("core utilities", () => {
     expect(fixed.success).toBe(true);
     expect(fixed.fixed).toContain("node:stable");
   });
+
+  it("skips auto-fix on complex Docker here-doc files", () => {
+    const fixed = applyFixes("FROM node:latest\nRUN <<EOF\nnpm install\nEOF\n", [sampleIssue]);
+    expect(fixed.success).toBe(false);
+    expect(fixed.skippedFixes[0].reason).toContain("here-doc");
+  });
 });

@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasAnyShellCommand, hasShellOption, replaceFirstShellCommand } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const apkNoCacheRule: Rule = {
@@ -11,16 +12,16 @@ export const apkNoCacheRule: Rule = {
   check(input) {
     return {
       issues: docker(input).run
-        .filter((item) => /\bapk\s+add\b/i.test(item.arguments))
-        .filter((item) => !/\b--no-cache\b/i.test(item.arguments))
+        .filter((item) => hasAnyShellCommand(item.arguments, [["apk", "add"]]))
+        .filter((item) => !hasShellOption(item.arguments, "--no-cache"))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "Alpine packages are installed without --no-cache.",
           why: "apk caches package indexes unless --no-cache is used, increasing final image size.",
           fix: "Add --no-cache to apk add commands.",
           badExample: item.raw,
-          goodExample: item.raw.replace(/\bapk\s+add\b/i, "apk add --no-cache"),
-          diffPreview: `- ${item.raw}\n+ ${item.raw.replace(/\bapk\s+add\b/i, "apk add --no-cache")}`,
+          goodExample: replaceFirstShellCommand(item.raw, ["apk", "add"], "apk add --no-cache"),
+          diffPreview: `- ${item.raw}\n+ ${replaceFirstShellCommand(item.raw, ["apk", "add"], "apk add --no-cache")}`,
           confidence: 0.96,
           falsePositiveRisk: "low",
           fixFeasibility: "high",
