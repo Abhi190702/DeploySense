@@ -32,6 +32,18 @@ export interface LogDoctorResult {
   errorsFound: number;
   unknownErrors: number;
   findings: ErrorExplanation[];
+  correlations: LogCorrelation[];
   unknownPatterns: string[];
   summary: string;
+}
+
+export interface LogCorrelation {
+  id: string;
+  title: string;
+  severity: Severity;
+  evidencePatterns: string[];
+  lineNumbers: number[];
+  diagnosis: string;
+  recommendedPath: string[];
+  confidence: number;
 }

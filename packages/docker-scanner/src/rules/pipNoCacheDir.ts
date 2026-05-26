@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasAnyShellCommand, hasShellOption, replaceFirstShellCommand } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const pipNoCacheDirRule: Rule = {
@@ -11,16 +12,16 @@ export const pipNoCacheDirRule: Rule = {
   check(input) {
     return {
       issues: docker(input).run
-        .filter((item) => /\bpip(3)?\s+install\b/i.test(item.arguments))
-        .filter((item) => !/\b--no-cache-dir\b/i.test(item.arguments))
+        .filter((item) => hasAnyShellCommand(item.arguments, [["pip", "install"], ["pip3", "install"]]))
+        .filter((item) => !hasShellOption(item.arguments, "--no-cache-dir"))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "pip cache is kept in the image layer.",
           why: "pip caches downloaded packages by default, which makes Python images larger without improving runtime behavior.",
           fix: "Add --no-cache-dir to pip install commands.",
           badExample: item.raw,
-          goodExample: item.raw.replace(/\bpip(3)?\s+install\b/i, (match) => `${match} --no-cache-dir`),
-          diffPreview: `- ${item.raw}\n+ ${item.raw.replace(/\bpip(3)?\s+install\b/i, (match) => `${match} --no-cache-dir`)}`,
+          goodExample: addNoCacheDir(item.raw),
+          diffPreview: `- ${item.raw}\n+ ${addNoCacheDir(item.raw)}`,
           confidence: 0.95,
           falsePositiveRisk: "low",
           fixFeasibility: "high",
@@ -29,3 +30,9 @@ export const pipNoCacheDirRule: Rule = {
     };
   }
 };
+
+function addNoCacheDir(raw: string): string {
+  const pip3 = replaceFirstShellCommand(raw, ["pip3", "install"], "pip3 install --no-cache-dir");
+  if (pip3 !== raw) return pip3;
+  return replaceFirstShellCommand(raw, ["pip", "install"], "pip install --no-cache-dir");
+}

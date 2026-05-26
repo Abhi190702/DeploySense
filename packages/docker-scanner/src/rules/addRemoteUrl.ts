@@ -11,7 +11,7 @@ export const addRemoteUrlRule: Rule = {
   check(input) {
     return {
       issues: docker(input).add
-        .filter((item) => /^https?:\/\//i.test(item.arguments.trim()))
+        .filter((item) => isRemoteUrl(item.arguments.trim()))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "Dockerfile downloads remote content with ADD.",
@@ -27,3 +27,8 @@ export const addRemoteUrlRule: Rule = {
     };
   }
 };
+
+function isRemoteUrl(value: string): boolean {
+  const lower = value.toLowerCase();
+  return lower.startsWith("https://") || lower.startsWith("http://");
+}

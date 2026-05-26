@@ -4,6 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { calculateScore } from "@deploysense/scanner-core";
 import { scanDockerfile } from "../../index";
+import { parseDockerfile } from "../../parser";
 
 const root = path.resolve(__dirname, "../../../../..");
 const bad = fs.readFileSync(path.join(root, "examples/broken-dockerfiles/node-bad.Dockerfile"), "utf8");
@@ -106,5 +107,19 @@ describe("docker scanner", () => {
     expect(ids).toContain("DOCKER_APT_UPDATE_SPLIT");
     expect(ids).toContain("DOCKER_APT_NO_CLEAN");
     expect(ids).toContain("DOCKER_PIP_NO_CACHE_DIR");
+  });
+
+  it("parses here-doc RUN blocks as one instruction without regex backtracking", () => {
+    const parsed = parseDockerfile([
+      "FROM alpine:3.20",
+      "RUN <<EOF",
+      "apk add curl",
+      "echo done",
+      "EOF",
+      "CMD [\"sh\"]"
+    ].join("\n"));
+    expect(parsed.run).toHaveLength(1);
+    expect(parsed.run[0].raw).toContain("apk add curl");
+    expect(parsed.cmd).toHaveLength(1);
   });
 });

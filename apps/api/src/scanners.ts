@@ -11,9 +11,9 @@ export function detectScanner(fileName: string, content: string): Exclude<Scanne
   const name = fileName.replace(/\\/g, "/").toLowerCase();
   if (name.endsWith("dockerfile") || name.endsWith(".dockerfile")) return "dockerfile";
   if (name.includes(".github/workflows/")) return "github-actions";
-  if (/docker-compose.*\.ya?ml$|compose\.ya?ml$/.test(name)) return "compose";
-  if (/\bservices:\s*[\r\n]/i.test(content)) return "compose";
-  if (/\bkind:\s*(deployment|service|ingress|pod|statefulset|daemonset|horizontalpodautoscaler|configmap|secret)\b/i.test(content)) return "kubernetes";
+  if (isComposeFileName(name)) return "compose";
+  if (hasTopLevelYamlKey(content, "services")) return "compose";
+  if (hasKnownKubernetesKind(content)) return "kubernetes";
   return "dockerfile";
 }
 
@@ -29,4 +29,31 @@ export function scanByType(type: Exclude<ScannerTool, "logs">, content: string, 
   else result = scanCompose(content, fileName);
   cache.set(key, { result, expiresAt: Date.now() + 60_000 });
   return result;
+}
+
+function isComposeFileName(name: string): boolean {
+  return name.endsWith("compose.yaml")
+    || name.endsWith("compose.yml")
+    || (name.includes("docker-compose") && (name.endsWith(".yaml") || name.endsWith(".yml")));
+}
+
+function hasTopLevelYamlKey(content: string, key: string): boolean {
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    if (line.startsWith(" ") || line.startsWith("\t")) continue;
+    if (trimmed === `${key}:`) return true;
+  }
+  return false;
+}
+
+function hasKnownKubernetesKind(content: string): boolean {
+  const known = new Set(["deployment", "service", "ingress", "pod", "statefulset", "daemonset", "horizontalpodautoscaler", "configmap", "secret"]);
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim().toLowerCase();
+    if (!trimmed.startsWith("kind:")) continue;
+    const kind = trimmed.slice("kind:".length).trim();
+    if (known.has(kind)) return true;
+  }
+  return false;
 }

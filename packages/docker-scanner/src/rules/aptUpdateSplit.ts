@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasAnyShellCommand } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const aptUpdateSplitRule: Rule = {
@@ -11,7 +12,8 @@ export const aptUpdateSplitRule: Rule = {
   check(input) {
     return {
       issues: docker(input).run
-        .filter((item) => /apt-get\s+update/i.test(item.arguments) && !/apt-get\s+install/i.test(item.arguments))
+        .filter((item) => hasAnyShellCommand(item.arguments, [["apt-get", "update"], ["apt", "update"]]))
+        .filter((item) => !hasAnyShellCommand(item.arguments, [["apt-get", "install"], ["apt", "install"]]))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "apt-get update runs without apt-get install in the same layer.",

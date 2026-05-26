@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { isLargeLinuxBase } from "../image";
 import { docker, issue } from "./helpers";
 
 export const largeBaseImageRule: Rule = {
@@ -11,14 +12,14 @@ export const largeBaseImageRule: Rule = {
   check(input) {
     return {
       issues: docker(input).from
-        .filter((item) => /^(ubuntu|debian|centos)(:|\s|$)/i.test(item.arguments) && !/(slim|alpine)/i.test(item.arguments))
+        .filter((item) => isLargeLinuxBase(item.arguments))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "Base image is a full Linux distribution.",
           why: "Full distro images increase attack surface, build time, and pull time.",
           fix: "Use a slim or alpine image where compatible.",
           badExample: item.raw,
-          goodExample: item.raw.replace(/(ubuntu|debian)(:\S+)?/i, "debian:bookworm-slim"),
+          goodExample: "FROM debian:bookworm-slim",
           diffPreview: `- ${item.raw}\n+ FROM debian:bookworm-slim`,
           autoFixable: true
         }))

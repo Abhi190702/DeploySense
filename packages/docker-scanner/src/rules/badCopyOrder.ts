@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasAnyShellCommand, shellWords } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const badCopyOrderRule: Rule = {
@@ -10,8 +11,8 @@ export const badCopyOrderRule: Rule = {
   autoFixable: false,
   check(input) {
     const parsed = docker(input);
-    const broadCopy = parsed.copy.find((item) => /^(\.|\S+\/?)\s+\.$/.test(item.arguments) || item.arguments.trim() === ". .");
-    const install = parsed.run.find((item) => /(npm|pnpm|yarn)\s+install|pip\s+install/i.test(item.arguments));
+    const broadCopy = parsed.copy.find((item) => isBroadCopyToWorkdir(item.arguments));
+    const install = parsed.run.find((item) => hasAnyShellCommand(item.arguments, [["npm", "install"], ["pnpm", "install"], ["yarn", "install"], ["pip", "install"], ["pip3", "install"]]));
     if (!broadCopy || !install || broadCopy.lineNumber > install.lineNumber) return { issues: [] };
     return {
       issues: [issue(input, {
@@ -26,3 +27,9 @@ export const badCopyOrderRule: Rule = {
     };
   }
 };
+
+function isBroadCopyToWorkdir(argumentsText: string): boolean {
+  const words = shellWords(argumentsText).filter((word) => !word.startsWith("--"));
+  if (words.length < 2) return false;
+  return words[words.length - 1] === "." && (words[words.length - 2] === "." || words[words.length - 2].endsWith("/"));
+}

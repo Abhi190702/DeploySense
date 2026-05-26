@@ -93,6 +93,11 @@ program
     }
     console.log(chalk.cyan.bold("DeploySense Log Doctor"));
     console.log(result.summary);
+    for (const correlation of result.correlations) {
+      console.log(`\n${chalk.red(`[${correlation.severity.toUpperCase()}]`)} ${chalk.bold(correlation.title)} (${Math.round(correlation.confidence * 100)}% confidence)`);
+      console.log(`Diagnosis: ${correlation.diagnosis}`);
+      console.log(`Path: ${correlation.recommendedPath.join(" -> ")}`);
+    }
     for (const finding of result.findings) {
       console.log(`\n${chalk.yellow(`[${finding.severity.toUpperCase()}]`)} ${chalk.bold(finding.title)} (${finding.lineNumber})`);
       console.log(`Line: ${finding.matchedLine}`);

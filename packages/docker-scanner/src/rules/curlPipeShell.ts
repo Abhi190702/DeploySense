@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasDownloadPipedToShell } from "../shell";
 import { docker, issue } from "./helpers";
 
 export const curlPipeShellRule: Rule = {
@@ -11,7 +12,7 @@ export const curlPipeShellRule: Rule = {
   check(input) {
     return {
       issues: docker(input).run
-        .filter((item) => /\b(curl|wget)\b[\s\S]*\|\s*(sh|bash|ash)\b/i.test(item.arguments))
+        .filter((item) => hasDownloadPipedToShell(item.arguments))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "Remote script is executed directly by a shell.",

@@ -1,4 +1,5 @@
 import type { Rule } from "@deploysense/scanner-core";
+import { hasSha256Digest, usesLatestTag } from "../image";
 import { docker, issue } from "./helpers";
 
 export const unpinnedDigestRule: Rule = {
@@ -11,7 +12,7 @@ export const unpinnedDigestRule: Rule = {
   check(input) {
     return {
       issues: docker(input).from
-        .filter((item) => !/@sha256:[a-f0-9]{64}\b/i.test(item.arguments))
+        .filter((item) => !hasSha256Digest(item.arguments))
         .map((item) => issue(input, {
           line: item.lineNumber,
           message: "Base image uses a tag without an immutable digest.",
@@ -20,7 +21,7 @@ export const unpinnedDigestRule: Rule = {
           badExample: item.raw,
           goodExample: "FROM node:20-alpine@sha256:<trusted-digest>",
           diffPreview: `- ${item.raw}\n+ FROM node:20-alpine@sha256:<trusted-digest>`,
-          confidence: /:latest\b/i.test(item.arguments) ? 0.92 : 0.78,
+          confidence: usesLatestTag(item.arguments) ? 0.92 : 0.78,
           falsePositiveRisk: "medium",
           fixFeasibility: "manual"
         }))

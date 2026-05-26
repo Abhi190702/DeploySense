@@ -20,7 +20,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Abhi190702/DeploySense/badge)](https://scorecard.dev/viewer/?uri=github.com/Abhi190702/DeploySense)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12981/badge)](https://www.bestpractices.dev/projects/12981)
-[![Coverage](https://img.shields.io/badge/Coverage-94.23%25-brightgreen?style=flat)](#quality-and-security-signals)
+[![Coverage](https://img.shields.io/codecov/c/github/Abhi190702/DeploySense?style=flat&label=Coverage)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codecov](https://codecov.io/gh/Abhi190702/DeploySense/graph/badge.svg)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
 
@@ -72,11 +72,11 @@ npx deploysense scan . --fail-on high --sarif
 
 | Scanner | Rules | Examples |
 |---|---:|---|
-| Dockerfile | 20 | `latest` tags, digest pinning, root user, missing healthcheck, secret files, unsafe remote downloads, package-manager hygiene |
+| Dockerfile | 20 | `latest` tags, digest pinning, root user, missing healthcheck, secret files, unsafe remote downloads, here-doc aware parsing, package-manager hygiene |
 | GitHub Actions | 12 | missing checkout, unpinned actions, broad permissions, missing cache, missing timeouts |
 | Kubernetes | 12 | missing resource limits, missing probes, privileged containers, single replica deployments |
 | Docker Compose | 10 | exposed database ports, hardcoded secrets, duplicate host ports, missing restart policies |
-| Log Doctor | 30+ | `ImagePullBackOff`, `CrashLoopBackOff`, OOM kills, port conflicts, CI permission errors |
+| Log Doctor | 30+ | `ImagePullBackOff`, `CrashLoopBackOff`, OOM kills, port conflicts, CI permission errors, correlated failure chains |
 
 -----
 
@@ -97,6 +97,20 @@ npx deploysense scan . --fail-on high --sarif
 | GitHub Action MVP | Ready |
 | VS Code extension MVP | Ready |
 | Shareable report links | Ready |
+
+-----
+
+## Enterprise Hardening
+
+Recent hardening work focuses on reducing false positives and making the scanner safer for real infrastructure repositories:
+
+- Dockerfile parsing no longer depends on a broad instruction regex and now keeps here-doc `RUN <<EOF` blocks as one logical instruction.
+- Docker RUN rules use a small shell tokenizer for package-manager and supply-chain checks instead of matching complex shell commands with brittle regexes.
+- Issues can include confidence, false-positive risk, fix feasibility, and evidence so teams can prioritize findings instead of treating every warning equally.
+- Auto-fix is deliberately conservative. It skips Docker here-docs and YAML anchors/aliases instead of rewriting complex files with unsafe text replacement.
+- Log Doctor now correlates related events into failure chains, such as image-pull loops, crash loops from missing dependencies, dependency outages, and OOM restart loops.
+
+This is still not a full AST-based infrastructure compiler. The roadmap is to progressively move Docker shell semantics, YAML editing, and Kubernetes cross-resource analysis toward AST-backed implementations.
 
 -----
 
@@ -238,7 +252,7 @@ Open-source trust signals are being added carefully:
 
 - **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns. CI publishes Scorecard results and uploads SARIF alerts.
 - **OpenSSF Best Practices** is a Linux Foundation badge program. DeploySense has earned the passing badge.
-- **Codecov** shows tracked test coverage over time. The current local test suite reports **94.23%** coverage, and CI uploads `coverage/lcov.info`.
+- **Codecov** shows tracked test coverage over time, and CI uploads `coverage/lcov.info`.
 - **CodeQL** runs static analysis for JavaScript and TypeScript.
 - **Dependabot** is configured for npm, GitHub Actions, and Docker updates.
 

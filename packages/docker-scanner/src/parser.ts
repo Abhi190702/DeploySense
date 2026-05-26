@@ -40,10 +40,25 @@ export function parseDockerfile(content: string): ParsedDockerfile {
     if (!trimmed || trimmed.startsWith("#")) continue;
     if (!logical) startLine = i + 1;
     logical += logical ? ` ${trimmed}` : trimmed;
+
     if (trimmed.endsWith("\\")) {
       logical = logical.slice(0, -1).trimEnd();
       continue;
     }
+
+    const hereDocs = findHereDocDelimiters(logical);
+    if (hereDocs.length) {
+      const remaining = [...hereDocs];
+      while (remaining.length && i + 1 < physical.length) {
+        i += 1;
+        const bodyLine = physical[i];
+        logical += `\n${bodyLine}`;
+        if (bodyLine.trim() === remaining[0]) {
+          remaining.shift();
+        }
+      }
+    }
+
     const parsed = parseInstructionLine(logical);
     if (parsed && known.has(parsed.instruction)) {
       instructions.push({
@@ -79,6 +94,14 @@ export function parseDockerfile(content: string): ParsedDockerfile {
   };
 }
 
+export function hasDockerHereDoc(content: string): boolean {
+  const physical = splitLines(content);
+  for (const line of physical) {
+    if (findHereDocDelimiters(line).length) return true;
+  }
+  return false;
+}
+
 function parseInstructionLine(value: string): { instruction: string; arguments: string } | undefined {
   let index = 0;
   while (index < value.length && isAsciiLetter(value[index])) {
@@ -104,6 +127,39 @@ function parseFlags(argumentsText: string): string[] {
       const valueSeparator = part.indexOf("=");
       return valueSeparator === -1 ? part : part.slice(0, valueSeparator);
     });
+}
+
+function findHereDocDelimiters(line: string): string[] {
+  const delimiters: string[] = [];
+
+  for (let index = 0; index < line.length - 1; index += 1) {
+    if (line[index] !== "<" || line[index + 1] !== "<") continue;
+
+    let cursor = index + 2;
+    if (line[cursor] === "-") cursor += 1;
+    cursor = skipWhitespace(line, cursor);
+
+    const quote = line[cursor] === "'" || line[cursor] === "\"" ? line[cursor] : "";
+    if (quote) cursor += 1;
+
+    let delimiter = "";
+    while (cursor < line.length) {
+      const char = line[cursor];
+      if (quote) {
+        if (char === quote) break;
+        delimiter += char;
+        cursor += 1;
+        continue;
+      }
+      if (isWhitespace(char)) break;
+      delimiter += char;
+      cursor += 1;
+    }
+
+    if (delimiter) delimiters.push(delimiter);
+  }
+
+  return delimiters;
 }
 
 function splitWhitespace(value: string): string[] {
