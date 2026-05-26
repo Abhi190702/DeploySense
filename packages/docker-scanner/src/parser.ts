@@ -30,7 +30,7 @@ const known = new Set(["FROM", "RUN", "COPY", "ADD", "ENV", "ARG", "LABEL", "USE
 
 export function parseDockerfile(content: string): ParsedDockerfile {
   const instructions: DockerInstruction[] = [];
-  const physical = content.split(/\r?\n/);
+  const physical = splitLines(content);
   let logical = "";
   let startLine = 0;
 
@@ -44,16 +44,15 @@ export function parseDockerfile(content: string): ParsedDockerfile {
       logical = logical.slice(0, -1).trimEnd();
       continue;
     }
-    const match = logical.match(/^([A-Za-z]+)\s+(.*)$/);
-    if (match && known.has(match[1].toUpperCase())) {
-      const instruction = match[1].toUpperCase();
+    const parsed = parseInstructionLine(logical);
+    if (parsed && known.has(parsed.instruction)) {
       instructions.push({
-        instruction,
-        arguments: match[2].trim(),
+        instruction: parsed.instruction,
+        arguments: parsed.arguments,
         lineNumber: startLine,
         raw: logical,
-        flags: parseFlags(match[2]),
-        stageIndex: instruction === "FROM" ? instructions.filter((item) => item.instruction === "FROM").length : undefined
+        flags: parseFlags(parsed.arguments),
+        stageIndex: parsed.instruction === "FROM" ? instructions.filter((item) => item.instruction === "FROM").length : undefined
       });
     }
     logical = "";
@@ -77,6 +76,24 @@ export function parseDockerfile(content: string): ParsedDockerfile {
     entrypoint: byName("ENTRYPOINT"),
     shell: byName("SHELL"),
     volume: byName("VOLUME")
+  };
+}
+
+function parseInstructionLine(value: string): { instruction: string; arguments: string } | undefined {
+  let index = 0;
+  while (index < value.length && isAsciiLetter(value[index])) {
+    index += 1;
+  }
+
+  if (index === 0 || index >= value.length || !isWhitespace(value[index])) {
+    return undefined;
+  }
+
+  const instruction = value.slice(0, index).toUpperCase();
+  const argsStart = skipWhitespace(value, index);
+  return {
+    instruction,
+    arguments: value.slice(argsStart).trim()
   };
 }
 
@@ -106,4 +123,40 @@ function splitWhitespace(value: string): string[] {
 
   if (current) parts.push(current);
   return parts;
+}
+
+function splitLines(value: string): string[] {
+  const lines: string[] = [];
+  let current = "";
+
+  for (let index = 0; index < value.length; index += 1) {
+    const char = value[index];
+    if (char === "\n") {
+      lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+
+  lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
+  return lines;
+}
+
+function skipWhitespace(value: string, start: number): number {
+  let index = start;
+  while (index < value.length && isWhitespace(value[index])) {
+    index += 1;
+  }
+  return index;
+}
+
+function isWhitespace(char: string | undefined): boolean {
+  return char === " " || char === "\t" || char === "\n" || char === "\r";
+}
+
+function isAsciiLetter(char: string | undefined): boolean {
+  if (!char) return false;
+  const code = char.charCodeAt(0);
+  return (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
 }
