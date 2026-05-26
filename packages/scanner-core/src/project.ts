@@ -1,9 +1,9 @@
 import { gradeForScore } from "./scoring";
-import type { Issue, ProjectReport, ScanResult } from "./types";
+import type { ArchitectureGraph, Issue, ProjectReport, ScanResult } from "./types";
 
 const severityRank = { critical: 5, high: 4, medium: 3, low: 2, info: 1 };
 
-export function createProjectReport(scanResults: ScanResult[], projectPath: string): ProjectReport {
+export function createProjectReport(scanResults: ScanResult[], projectPath: string, architecture?: ArchitectureGraph): ProjectReport {
   const allIssues = scanResults.flatMap((result) => result.issues);
   const overallScore = scanResults.length
     ? Math.round(scanResults.reduce((sum, result) => sum + result.score, 0) / scanResults.length)
@@ -21,6 +21,7 @@ export function createProjectReport(scanResults: ScanResult[], projectPath: stri
     totalIssues: allIssues.length,
     topIssues,
     recommendations: topIssues.slice(0, 5).map((issue) => `${issue.id}: ${issue.fix}`),
+    architecture,
     timestamp: new Date().toISOString(),
     projectPath
   };

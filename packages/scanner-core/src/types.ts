@@ -79,8 +79,59 @@ export interface ProjectReport {
   totalIssues: number;
   topIssues: Issue[];
   recommendations: string[];
+  architecture?: ArchitectureGraph;
   timestamp: string;
   projectPath: string;
+}
+
+export type ArchitectureNodeType =
+  | "pipeline"
+  | "image"
+  | "dockerfile"
+  | "workload"
+  | "service"
+  | "ingress"
+  | "compose-service"
+  | "config";
+
+export interface ArchitectureNode {
+  id: string;
+  type: ArchitectureNodeType;
+  label: string;
+  file: string;
+  metadata?: Record<string, string | number | boolean | string[]>;
+}
+
+export interface ArchitectureEdge {
+  from: string;
+  to: string;
+  type: "builds" | "deploys" | "routes" | "depends_on" | "uses_image" | "exposes" | "references";
+  label: string;
+  confidence: number;
+}
+
+export interface ArchitectureInsight {
+  id: string;
+  title: string;
+  severity: Severity;
+  category: RiskCategory;
+  message: string;
+  files: string[];
+  fix: string;
+}
+
+export interface ArchitectureGraph {
+  nodes: ArchitectureNode[];
+  edges: ArchitectureEdge[];
+  insights: ArchitectureInsight[];
+  summary: {
+    pipelines: number;
+    images: number;
+    workloads: number;
+    services: number;
+    exposedEndpoints: number;
+    linkedSystems: number;
+  };
 }
 
 export interface Rule {

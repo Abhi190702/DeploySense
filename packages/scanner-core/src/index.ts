@@ -1,4 +1,5 @@
 export * from "./autofix";
+export * from "./architecture";
 export * from "./engine";
 export * from "./project";
 export * from "./report";

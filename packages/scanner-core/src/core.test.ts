@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { applyFixes } from "./autofix";
+import { analyzeArchitecture } from "./architecture";
 import { RuleEngine } from "./engine";
 import { createProjectReport } from "./project";
 import { projectToMarkdown, toJson, toMarkdown, toTerminal } from "./report";
@@ -69,8 +70,15 @@ describe("core utilities", () => {
   });
 
   it("creates project reports", () => {
-    const report = createProjectReport([sampleResult], ".");
+    const architecture = analyzeArchitecture([
+      { name: "Dockerfile", content: "FROM node:20-alpine\nEXPOSE 3000\n" },
+      { name: ".github/workflows/deploy.yml", content: "jobs:\n  deploy:\n    steps:\n      - run: docker build -t ghcr.io/acme/api:1.0 .\n      - run: kubectl apply -f k8s/\n" },
+      { name: "k8s/deployment.yaml", content: "kind: Deployment\nmetadata:\n  name: api\nspec:\n  template:\n    spec:\n      containers:\n        - image: ghcr.io/acme/api:latest\n" }
+    ], [sampleResult]);
+    const report = createProjectReport([sampleResult], ".", architecture);
     expect(report.overallScore).toBe(92);
+    expect(report.architecture?.nodes.length).toBeGreaterThan(2);
+    expect(report.architecture?.insights.some((insight) => insight.id === "ARCH_MUTABLE_IMAGE_CHAIN")).toBe(true);
     expect(projectToMarkdown(report)).toContain("Project Report");
   });
 

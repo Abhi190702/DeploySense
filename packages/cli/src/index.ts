@@ -7,7 +7,7 @@ import { Command } from "commander";
 import ora from "ora";
 import YAML from "yaml";
 import { analyzeLog } from "@deploysense/log-doctor";
-import { applyFixes, createProjectReport, projectToMarkdown, toJson, toMarkdown, toSarif, toTerminal } from "@deploysense/scanner-core";
+import { analyzeArchitecture, applyFixes, createProjectReport, projectToMarkdown, toJson, toMarkdown, toSarif, toTerminal } from "@deploysense/scanner-core";
 import type { ProjectReport, ScanResult, Severity } from "@deploysense/scanner-core";
 import { listComposeRules } from "@deploysense/compose-scanner";
 import { listDockerRules } from "@deploysense/docker-scanner";
@@ -130,7 +130,12 @@ function scanFile(filePath: string, forced = "auto"): ScanResult {
 
 function scanDirectory(root: string, config: Config, options: Record<string, unknown>): ProjectReport {
   const files = findScannableFiles(root, config.ignore ?? []);
-  return createProjectReport(files.map((file) => scanFile(file, options.scanner as string)), root);
+  const architectureFiles = files.map((file) => ({
+    name: path.relative(root, file).replace(/\\/g, "/"),
+    content: fs.readFileSync(file, "utf8")
+  }));
+  const results = files.map((file) => scanFile(file, options.scanner as string));
+  return createProjectReport(results, root, analyzeArchitecture(architectureFiles, results));
 }
 
 function outputResult(result: ScanResult, options: Record<string, unknown>) {
@@ -150,6 +155,10 @@ function outputProject(report: ProjectReport, options: Record<string, unknown>) 
     console.log(chalk.cyan.bold("DeploySense Project Report"));
     console.log(`Overall: ${report.overallScore}/100 [${report.overallGrade}]`);
     console.log(`Files scanned: ${report.scanResults.length}  Issues: ${report.totalIssues}`);
+    if (report.architecture) {
+      console.log(`Architecture: ${report.architecture.nodes.length} nodes, ${report.architecture.edges.length} links, ${report.architecture.insights.length} insights`);
+      for (const insight of report.architecture.insights.slice(0, 3)) console.log(`- [${insight.severity}] ${insight.title}: ${insight.fix}`);
+    }
     for (const result of report.scanResults) {
       console.log(`- ${result.file}: ${result.score}/100 ${result.grade} (${result.summary.total} issues)`);
     }

@@ -119,10 +119,13 @@ export function projectToMarkdown(report: ProjectReport): string {
 **Overall Score:** ${report.overallScore}/100 (${report.overallGrade})  
 **Files Scanned:** ${report.scanResults.length}  
 **Total Issues:** ${report.totalIssues}
+${report.architecture ? `**Architecture:** ${report.architecture.nodes.length} nodes, ${report.architecture.edges.length} links, ${report.architecture.insights.length} insights\n` : ""}
 
 | Scanner | File | Score | Issues |
 |---|---|---:|---:|
 ${rows}
+
+${report.architecture?.insights.length ? `## Architecture Insights\n\n${report.architecture.insights.map((insight) => `- **${insight.severity.toUpperCase()}** ${insight.title}: ${insight.fix}`).join("\n")}\n` : ""}
 
 ## Top Issues
 
