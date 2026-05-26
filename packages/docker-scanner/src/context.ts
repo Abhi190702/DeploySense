@@ -127,10 +127,23 @@ function inferPackageManager(lockfiles: string[], nearbyFiles: string[]): Docker
 }
 
 function hasAnyPattern(patterns: string[], expected: string[]): boolean {
-  const normalized = patterns.map((pattern) => pattern.replace(/\\/g, "/").replace(/^\//, "").toLowerCase());
+  const normalized = patterns.map(normalizeDockerignorePattern);
   return expected.some((hint) => {
     const needle = hint.toLowerCase();
     const searchableNeedle = needle.split("*").join("");
     return normalized.some((pattern) => pattern === needle || pattern.includes(searchableNeedle));
   });
+}
+
+function normalizeDockerignorePattern(pattern: string): string {
+  let normalized = "";
+  for (const char of pattern) {
+    normalized += char === "\\" ? "/" : char.toLowerCase();
+  }
+
+  while (normalized.startsWith("/")) {
+    normalized = normalized.slice(1);
+  }
+
+  return normalized;
 }

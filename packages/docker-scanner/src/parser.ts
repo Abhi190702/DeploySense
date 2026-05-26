@@ -81,11 +81,29 @@ export function parseDockerfile(content: string): ParsedDockerfile {
 }
 
 function parseFlags(argumentsText: string): string[] {
-  return argumentsText
-    .split(/\s+/)
+  return splitWhitespace(argumentsText)
     .filter((part) => part.startsWith("--"))
     .map((part) => {
       const valueSeparator = part.indexOf("=");
       return valueSeparator === -1 ? part : part.slice(0, valueSeparator);
     });
+}
+
+function splitWhitespace(value: string): string[] {
+  const parts: string[] = [];
+  let current = "";
+
+  for (const char of value) {
+    if (char === " " || char === "\t" || char === "\n" || char === "\r") {
+      if (current) {
+        parts.push(current);
+        current = "";
+      }
+      continue;
+    }
+    current += char;
+  }
+
+  if (current) parts.push(current);
+  return parts;
 }
