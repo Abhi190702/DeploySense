@@ -14,7 +14,6 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 [![npm](https://img.shields.io/npm/v/deploysense?style=for-the-badge&label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/deploysense)
 [![License](https://img.shields.io/badge/License-MIT-22d3ee?style=for-the-badge)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/Abhi190702/DeploySense?style=for-the-badge&label=Release&color=f97316)](https://github.com/Abhi190702/DeploySense/releases)
-[![Repo Size](https://img.shields.io/github/repo-size/Abhi190702/DeploySense?style=for-the-badge&color=22c55e)](https://github.com/Abhi190702/DeploySense)
 [![Website](https://img.shields.io/badge/Website-Live-111827?style=for-the-badge&logo=vercel)](https://deploy-sense-web.vercel.app/)
 [![API](https://img.shields.io/website?url=https%3A%2F%2Fdeploysense-api.onrender.com%2Fapi%2Fhealth&style=for-the-badge&label=API&up_message=Live&down_message=Sleeping)](https://deploysense-api.onrender.com/api/health)
 
@@ -26,154 +25,148 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 
 </div>
 
------
+---
 
-## Overview
+## What is DeploySense?
 
-**DeploySense** scans deployment configuration before it reaches production and returns health scores, risk categories, plain-English explanations, and concrete fixes. It is built for developers who want a fast local CLI, maintainers who want CI guardrails, and teams who want a lightweight web dashboard for reviewing deployment risk.
+**DeploySense** catches deployment mistakes before they wake you up at 3 AM. It scans Dockerfiles, GitHub Actions workflows, Kubernetes manifests, Docker Compose files, and deployment logs — returning health scores, risk categories, plain-English explanations, and copy-paste fixes.
 
-DeploySense currently covers Dockerfiles, GitHub Actions workflows, Kubernetes manifests, Docker Compose files, and deployment logs. Project scans now also build a lightweight architecture graph that connects pipelines, Dockerfiles, image references, workloads, services, and exposed endpoints. The scanner engine is rule-based and contributor-friendly: every issue includes severity, category, why it matters, how to fix it, examples, and SARIF-compatible output for security tooling.
+It is designed for three audiences:
 
-Live product links:
+- **Developers** who want a fast `npx deploysense scan .` before pushing.
+- **Platform teams** who want CI guardrails that explain *why* something is risky.
+- **Open-source contributors** who want a rule-based engine that is easy to extend.
 
-- Web dashboard: [deploy-sense-web.vercel.app](https://deploy-sense-web.vercel.app/)
-- API health: [deploysense-api.onrender.com/api/health](https://deploysense-api.onrender.com/api/health)
-- npm package: [deploysense](https://www.npmjs.com/package/deploysense)
+> **Live product:** [deploy-sense-web.vercel.app](https://deploy-sense-web.vercel.app/) · API: [deploysense-api.onrender.com/api/health](https://deploysense-api.onrender.com/api/health)
 
------
+---
 
-## Start Here
+## Quick Start
 
-Run a scan without installing anything globally:
+Run a scan without installing anything:
 
 ```bash
 npx deploysense scan Dockerfile
 ```
 
-Scan this repository after cloning:
+Scan a whole project (detects all supported file types):
 
 ```bash
-git clone https://github.com/Abhi190702/DeploySense.git
-cd DeploySense
-pnpm install
-pnpm build
-npx deploysense scan examples/broken-dockerfiles/node-bad.Dockerfile
+npx deploysense scan .
 ```
 
-Use DeploySense in CI:
+Use in CI to fail on high-severity issues and emit SARIF:
 
 ```bash
 npx deploysense scan . --fail-on high --sarif
 ```
 
------
+Diagnose a deployment log:
+
+```bash
+npx deploysense doctor deploy.log
+```
+
+---
 
 ## What It Detects
 
-| Scanner | Rules | Examples |
-|---|---:|---|
-| Dockerfile | 20 | `latest` tags, digest pinning, root user, missing healthcheck, secret files, unsafe remote downloads, here-doc aware parsing, package-manager hygiene |
-| GitHub Actions | 12 | missing checkout, unpinned actions, broad permissions, missing cache, missing timeouts |
-| Kubernetes | 12 | missing resource limits, missing probes, privileged containers, single replica deployments |
-| Docker Compose | 10 | exposed database ports, hardcoded secrets, duplicate host ports, missing restart policies |
-| Log Doctor | 30+ | `ImagePullBackOff`, `CrashLoopBackOff`, OOM kills, port conflicts, CI permission errors, correlated failure chains |
+| Scanner | Rules | What it catches |
+|---|:---:|---|
+| **Dockerfile** | 20 | `latest` tags, root user, missing `HEALTHCHECK`, secret files, unsafe `curl \| sh`, bad cache order, missing `.dockerignore`, here-doc aware parsing |
+| **GitHub Actions** | 12 | Missing `actions/checkout`, unpinned actions, broad permissions, no cache step, missing timeouts, no concurrency control |
+| **Kubernetes** | 12 | Missing resource limits/requests, missing liveness/readiness probes, privileged containers, single replica, no `securityContext` |
+| **Docker Compose** | 10 | Exposed database ports, hardcoded secrets, duplicate host ports, missing restart policies |
+| **Log Doctor** | 30+ | `ImagePullBackOff`, `CrashLoopBackOff`, OOM kills, `ECONNREFUSED`, correlated failure chains |
 
------
+---
 
 ## Features
 
 | Capability | Status |
 |---|---|
-| Health score, grade, and status | Ready |
-| Severity and category scoring | Ready |
-| CLI scanner and project scan | Ready |
-| Cross-file architecture graph | Ready |
-| Express API server | Ready |
-| Next.js web dashboard | Ready |
-| SARIF output for code scanning | Ready |
-| Markdown and JSON reports | Ready |
-| Log Doctor explanations | Ready |
-| Safe auto-fix engine | Ready |
-| GitHub Action MVP | Ready |
-| VS Code extension MVP | Ready |
-| Shareable report links | Ready |
+| Health score, grade, and status | ✅ Ready |
+| Severity and category scoring | ✅ Ready |
+| CLI scanner and project scan | ✅ Ready |
+| Cross-file architecture graph | ✅ Ready |
+| Express API server | ✅ Ready |
+| Next.js web dashboard | ✅ Ready |
+| SARIF output for code scanning | ✅ Ready |
+| Markdown and JSON reports | ✅ Ready |
+| Log Doctor with failure chains | ✅ Ready |
+| Conservative auto-fix engine | ✅ Ready |
+| GitHub Action | ✅ Ready |
+| VS Code extension MVP | ✅ Ready |
+| Shareable report links | ✅ Ready |
 
------
+---
 
 ## Enterprise Hardening
 
-Recent hardening work focuses on reducing false positives and making the scanner safer for real infrastructure repositories:
+The scanner engine is hardened beyond simple regex matching:
 
-- Dockerfile parsing no longer depends on a broad instruction regex and now keeps here-doc `RUN <<EOF` blocks as one logical instruction.
-- Docker RUN rules use a small shell tokenizer for package-manager and supply-chain checks instead of matching complex shell commands with brittle regexes.
-- Issues can include confidence, false-positive risk, fix feasibility, and evidence so teams can prioritize findings instead of treating every warning equally.
-- Auto-fix is deliberately conservative. It skips Docker here-docs and YAML anchors/aliases instead of rewriting complex files with unsafe text replacement.
-- Log Doctor now correlates related events into failure chains, such as image-pull loops, crash loops from missing dependencies, dependency outages, and OOM restart loops.
+- **Tokenized shell analysis** — Docker `RUN` rules use a shell tokenizer, not string matching. Commands like `apt-get`, `curl`, and `pip` are identified by token position, so line continuations and quoting do not cause false positives.
+- **Here-doc aware parsing** — `RUN <<EOF` blocks are captured as a single logical instruction, preventing instruction-level rules from misinterpreting heredoc bodies.
+- **Conservative auto-fix** — The fix engine refuses to mutate files containing Dockerfile here-docs or YAML anchors/aliases. It explains why and shows the fix as a suggestion instead.
+- **Correlated failure chains** — Log Doctor groups related log events (e.g. `ImagePullBackOff` + rate-limit error) into a single high-confidence failure chain with an ordered remediation path.
+- **Confidence metadata** — Every issue can include a confidence score, false-positive risk, and fix feasibility so teams can prioritize findings.
 
-This is still not a full AST-based infrastructure compiler. The roadmap is to progressively move Docker shell semantics, YAML editing, and Kubernetes cross-resource analysis toward AST-backed implementations.
+---
 
------
-
-## CLI
+## CLI Reference
 
 Install globally:
 
 ```bash
 npm install -g deploysense
-deploysense scan .
 ```
 
-Common commands:
+Commands:
 
 ```bash
-deploysense scan Dockerfile
-deploysense scan . --json
-deploysense scan . --markdown
-deploysense scan . --sarif
-deploysense scan . --fail-on high
-deploysense doctor examples/logs/sample-errors.txt
-deploysense list-rules
-deploysense fix Dockerfile --yes
+deploysense scan Dockerfile           # Scan a single file
+deploysense scan .                    # Scan a whole project
+deploysense scan . --json             # JSON output
+deploysense scan . --markdown         # Markdown report
+deploysense scan . --sarif            # SARIF for GitHub code scanning
+deploysense scan . --fail-on high     # Exit 1 if high+ issues found
+deploysense doctor deploy.log         # Diagnose a deployment log
+deploysense list-rules                # List all rules
+deploysense fix Dockerfile --yes      # Apply safe auto-fixes
 ```
 
 Example output:
 
-```text
+```
 Score: 68/100  [C]  Needs Improvement
 
 Issues Found: 4
 Critical: 0   High: 1   Medium: 2   Low: 1
 
 [HIGH] DOCKER_NO_HEALTHCHECK
-Missing HEALTHCHECK instruction
-Fix: Add HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1
+  Missing HEALTHCHECK instruction
+  Fix: Add HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1
 ```
 
------
+---
 
 ## Web Dashboard
 
-DeploySense Web is live at [deploy-sense-web.vercel.app](https://deploy-sense-web.vercel.app/).
+Live at [deploy-sense-web.vercel.app](https://deploy-sense-web.vercel.app/).
 
-Run it locally:
+Run locally:
 
 ```bash
 pnpm --filter web dev
 ```
 
-Set the API URL when deploying:
+The dashboard includes a Monaco code editor, project architecture graph, rules explorer, Log Doctor, docs, contribution guide, badge generator, and shareable report links.
 
-```bash
-NEXT_PUBLIC_API_URL=https://deploysense-api.onrender.com
-```
-
-The dashboard includes a scan workspace, Monaco editor, project architecture view, rules explorer, docs, contribution page, badge generator, and shared report pages.
-
------
+---
 
 ## API
 
-DeploySense API is live at [deploysense-api.onrender.com](https://deploysense-api.onrender.com/api/health).
+Live at [deploysense-api.onrender.com](https://deploysense-api.onrender.com/api/health).
 
 Run locally:
 
@@ -189,11 +182,9 @@ curl -X POST http://localhost:3001/api/scan/dockerfile \
   -d '{"content":"FROM node:latest\nCOPY . .\n"}'
 ```
 
------
+---
 
 ## GitHub Action
-
-Use DeploySense in a workflow:
 
 ```yaml
 name: DeploySense
@@ -215,14 +206,14 @@ jobs:
           comment-pr: true
 ```
 
-The GitHub Action is built, but it still needs real-world PR testing before marketplace release.
+The action posts a score summary to pull request comments and fails the build on any issue at or above the configured threshold.
 
------
+---
 
 ## Architecture
 
-```text
-                 DeploySense
+```
+                  DeploySense
 
    CLI          Web          API          GitHub Action
     |            |            |                 |
@@ -235,74 +226,75 @@ The GitHub Action is built, but it still needs real-world PR testing before mark
 Dockerfile  GitHub Actions  Kubernetes  Docker Compose  Log Doctor
 ```
 
-For project scans, DeploySense also builds an architecture graph:
+Project scans also build an architecture graph connecting CI pipelines, Dockerfiles, image references, Kubernetes workloads, services, and exposed endpoints:
 
-```text
-GitHub Actions -> Dockerfile -> Image -> Kubernetes Deployment -> Service / Ingress
-                         \-> Docker Compose service dependencies
+```
+GitHub Actions → Dockerfile → Image → Kubernetes Deployment → Service
+                         \→ Docker Compose service dependencies
 ```
 
-This powers cross-file insights such as mutable image chains, missing deployment pipelines, weak build/runtime linkage, incomplete health signals, and secret exposure paths.
+This powers cross-file insights such as mutable image chains, missing pipelines, weak build/runtime linkage, and secret exposure paths.
 
------
+---
 
-## Quality And Security Signals
+## Security & OpenSSF
 
-Open-source trust signals are being added carefully:
+| Signal | Status |
+|---|---|
+| OpenSSF Scorecard | Active — monitors branch protection, pinned dependencies, token permissions |
+| OpenSSF Best Practices | Passing badge earned |
+| CodeQL | Active — static analysis on every push and PR |
+| Dependabot | Configured for npm, Actions, and Docker |
+| Codecov | Coverage tracked — CI uploads `coverage/lcov.info` |
+| SECURITY.md | [Security policy and disclosure process](SECURITY.md) |
 
-- **OpenSSF Scorecard** checks repository security posture such as branch protection, dependency pinning, token permissions, and dangerous workflow patterns. CI publishes Scorecard results and uploads SARIF alerts.
-- **OpenSSF Best Practices** is a Linux Foundation badge program. DeploySense has earned the passing badge.
-- **Codecov** shows tracked test coverage over time, and CI uploads `coverage/lcov.info`.
-- **CodeQL** runs static analysis for JavaScript and TypeScript.
-- **Dependabot** is configured for npm, GitHub Actions, and Docker updates.
-
-These are shown as pending/setup badges until the external services are connected. No fake passing badges.
-
------
+---
 
 ## Contributing
 
-DeploySense is designed for contributors. Good first contributions include:
+DeploySense is built for contributors. Every scanner rule is a small self-contained TypeScript file — you can add a new check in under 30 minutes.
+
+Good first contributions:
 
 - Add a new scanner rule
-- Improve a rule explanation
+- Improve a rule explanation or example
 - Add a Log Doctor pattern
 - Improve the dashboard UX
 - Expand docs and examples
-- Test the GitHub Action in a real pull request
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, rule-writing guidance, code style, and pull request workflow.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, rule-writing guidance, code style, and pull request workflow.
 
------
+---
 
 ## Self-Hosting
 
 ```bash
 docker compose up -d
-# Open http://localhost
+# Opens at http://localhost
 ```
 
-Self-hosting runs the web dashboard, API server, and nginx reverse proxy.
+Runs the web dashboard, API server, and nginx reverse proxy.
 
------
+---
 
 ## Roadmap
 
-- [x] Core scanner engine
-- [x] Docker, GitHub Actions, Kubernetes, Compose, and Log Doctor scanners
-- [x] CLI, API, web dashboard, GitHub Action MVP, VS Code MVP
+- [x] Core scanner engine and 54+ rules
+- [x] CLI, API, web dashboard, GitHub Action, VS Code extension
 - [x] npm package published
 - [x] Public web and API deployment
-- [x] Codecov integration
-- [x] OpenSSF Scorecard workflow
-- [x] CodeQL static analysis
-- [x] Dependabot dependency updates
-- [x] OpenSSF Best Practices enrollment
+- [x] OpenSSF Scorecard, CodeQL, Dependabot
+- [x] OpenSSF Best Practices passing badge
+- [x] Tokenized shell analysis and here-doc parsing
+- [x] Conservative auto-fix with safety gates
+- [x] Log Doctor failure chain correlations
+- [x] Cross-file architecture graph
 - [ ] GitHub Action marketplace release
 - [ ] VS Code marketplace release
 - [ ] Persistent share storage
+- [ ] OpenSSF Silver badge
 
------
+---
 
 ## Maintainer
 
@@ -321,7 +313,7 @@ Self-hosting runs the web dashboard, API server, and nginx reverse proxy.
   </tr>
 </table>
 
------
+---
 
 ## License
 
