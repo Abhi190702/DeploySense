@@ -1,23 +1,38 @@
 # Security Policy
 
-Please report security issues privately by opening a GitHub security advisory:
+## Supported Versions
 
-https://github.com/Abhi190702/DeploySense/security/advisories/new
+| Version | Supported |
+| ------- | --------- |
+| 0.1.x   | ✅ Active  |
 
-You can also contact the maintainer through the GitHub profile:
+## Reporting a Vulnerability
 
-https://github.com/Abhi190702
+**Please do not open a public GitHub issue for security vulnerabilities.**
 
-Do not disclose vulnerabilities publicly until we have had a reasonable chance to investigate and release a fix.
+### Option 1 — GitHub Private Advisory (Preferred)
+Open a [private security advisory](https://github.com/Abhi190702/DeploySense/security/advisories/new) directly on GitHub. This is confidential and only visible to maintainers.
 
-## Response Targets
+### Option 2 — Email
+If you prefer email, contact the maintainer via their GitHub profile.
 
-- We aim to acknowledge new vulnerability reports within 14 days.
-- We prioritize confirmed critical and high severity issues immediately.
-- Public release notes will mention fixed public CVEs or equivalent vulnerability identifiers when applicable.
+### What to include
+- A clear description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Any suggested fixes
 
-DeploySense scanners are deterministic and do not execute user-submitted configuration files. The API enforces size limits, rate limits, and security headers.
+### Response time
+We aim to respond within **48 hours** and will keep you informed of progress.
 
-## Secure Development Notes
+### Scope
+The following are in scope:
+- `apps/api` — REST API endpoints (XSS, injection, auth bypass)
+- `packages/cli` — CLI argument parsing and file access
+- `packages/scanner-core` — Scanner rule logic
+- `apps/web` — Next.js web application
 
-DeploySense is written in TypeScript and runs with Node.js. The project avoids implementing custom cryptography; when secure randomness is needed, it uses Node.js `crypto`. User-submitted files are parsed as text/YAML only and are never executed by the scanner. Auto-fixes are conservative and skip complex file shapes that require AST-preserving edits.
+Out of scope: third-party dependencies (please report those to their maintainers directly).
+
+## Disclosure Policy
+We follow **coordinated disclosure**. Once a fix is released, we will credit the reporter in the release notes (unless they prefer to remain anonymous).
