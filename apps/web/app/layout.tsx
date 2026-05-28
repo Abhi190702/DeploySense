@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   title: "DeploySense – DevOps Intelligence Platform",
   description:
     "Scan Docker, Kubernetes, GitHub Actions, and Compose configs before deployments break production. Get health scores, risk analysis, and exact fixes.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
   openGraph: {
     title: "DeploySense – Fix deployments before they break production",
     description:
