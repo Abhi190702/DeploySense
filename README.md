@@ -1,6 +1,6 @@
 <div align="center">
 
-![DeploySense Banner](https://raw.githubusercontent.com/Abhi190702/DeploySense/main/docs/banner.png)
+![DeploySense Banner](./docs/banner.png)
 
 # DeploySense
 
