@@ -2,7 +2,6 @@
 
 ![DeploySense Banner](./docs/banner.png)
 
-# DeploySense
 
 **Fix deployments before they break production.**
 
