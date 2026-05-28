@@ -18,19 +18,19 @@ describe("GET /api/badge/contributions", () => {
     const res = await request(server).get("/api/badge/contributions");
     expect(res.status).toBe(400);
     expect(res.headers["content-type"]).toMatch(/image\/svg\+xml/);
-    expect(res.text).toContain("<svg");
+    expect(res.body.toString()).toContain("<svg");
   });
 
   it("returns 200 and SVG with content-type image/svg+xml", async () => {
     const res = await request(server).get("/api/badge/contributions?user=Abhi190702");
     expect(res.status).toBe(200);
     expect(res.headers["content-type"]).toMatch(/image\/svg\+xml/);
-    expect(res.text).toContain("<svg");
+    expect(res.body.toString()).toContain("<svg");
   });
 
   it("SVG contains the username (case-insensitive)", async () => {
     const res = await request(server).get("/api/badge/contributions?user=Abhi190702");
-    expect(res.text.toLowerCase()).toContain("abhi190702");
+    expect(res.body.toString().toLowerCase()).toContain("abhi190702");
   });
 
   it("returns fallback SVG when GITHUB_TOKEN is not set", async () => {
@@ -39,7 +39,7 @@ describe("GET /api/badge/contributions", () => {
 
     const res = await request(server).get("/api/badge/contributions?user=testuser");
     expect(res.status).toBe(200);
-    expect(res.text).toContain("GITHUB_TOKEN");
+    expect(res.body.toString()).toContain("GITHUB_TOKEN");
 
     process.env.GITHUB_TOKEN = saved;
   });
