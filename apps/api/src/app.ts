@@ -12,6 +12,7 @@ import { listGithubActionsRules } from "@deploysense/github-actions-scanner";
 import { listK8sRules } from "@deploysense/k8s-scanner";
 import { getScan, getSharedScan, recentScans, shareScan, storeScan } from "./history";
 import { detectScanner, scanByType } from "./scanners";
+import { badgeRouter } from "./routes/badge";
 
 const scanSchema = z.object({
   content: z.string().min(1).max(500 * 1024),
@@ -122,6 +123,9 @@ app.get("/api/share/:shareToken", (req, res, next) => {
   if (!scan) return next(httpError("NOT_FOUND", "Shared scan not found", 404));
   res.json(scan);
 });
+
+// Badge route (SVG contribution activity)
+app.use("/api/badge", badgeRouter);
 
 app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (error instanceof z.ZodError) {
