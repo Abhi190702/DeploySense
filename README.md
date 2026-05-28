@@ -11,6 +11,7 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 
 <div align="center">
 
+<!-- Core Status -->
 [![CI](https://img.shields.io/github/actions/workflow/status/Abhi190702/DeploySense/ci.yml?branch=main&style=for-the-badge&label=CI&logo=github)](https://github.com/Abhi190702/DeploySense/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/deploysense?style=for-the-badge&label=npm&color=cb3837&logo=npm)](https://www.npmjs.com/package/deploysense)
 [![License](https://img.shields.io/badge/License-MIT-22d3ee?style=for-the-badge)](LICENSE)
@@ -18,11 +19,29 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 [![Website](https://img.shields.io/badge/Website-Live-111827?style=for-the-badge&logo=vercel)](https://deploy-sense-web.vercel.app/)
 [![API](https://img.shields.io/website?url=https%3A%2F%2Fdeploysense-api.onrender.com%2Fapi%2Fhealth&style=for-the-badge&label=API&up_message=Live&down_message=Sleeping)](https://deploysense-api.onrender.com/api/health)
 
+<!-- Quality & Security -->
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Abhi190702/DeploySense/badge)](https://scorecard.dev/viewer/?uri=github.com/Abhi190702/DeploySense)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12981/badge)](https://www.bestpractices.dev/projects/12981)
 [![Coverage](https://img.shields.io/codecov/c/github/Abhi190702/DeploySense?style=flat&label=Coverage)](https://codecov.io/gh/Abhi190702/DeploySense)
 [![Codecov](https://codecov.io/gh/Abhi190702/DeploySense/graph/badge.svg)](https://codecov.io/gh/Abhi190702/DeploySense)
+
+<!-- Community & Activity -->
+[![Stars](https://img.shields.io/github/stars/Abhi190702/DeploySense?style=flat&logo=github&label=Stars&color=22d3ee)](https://github.com/Abhi190702/DeploySense/stargazers)
+[![Forks](https://img.shields.io/github/forks/Abhi190702/DeploySense?style=flat&logo=github&label=Forks)](https://github.com/Abhi190702/DeploySense/forks)
+[![Issues](https://img.shields.io/github/issues/Abhi190702/DeploySense?style=flat&label=Issues&color=f97316)](https://github.com/Abhi190702/DeploySense/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat&logo=github)](https://github.com/Abhi190702/DeploySense/pulls)
+[![Last Commit](https://img.shields.io/github/last-commit/Abhi190702/DeploySense?style=flat&label=Last+Commit&color=22d3ee)](https://github.com/Abhi190702/DeploySense/commits/main)
+[![Contributors](https://img.shields.io/github/contributors/Abhi190702/DeploySense?style=flat&label=Contributors)](https://github.com/Abhi190702/DeploySense/graphs/contributors)
+
+<!-- Tech Stack -->
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node](https://img.shields.io/badge/Node.js-20-339933?style=flat&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-monorepo-f69220?style=flat&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
+
+<!-- npm Downloads -->
+[![npm downloads](https://img.shields.io/npm/dm/deploysense?style=flat&label=downloads%2Fmonth&color=cb3837&logo=npm)](https://www.npmjs.com/package/deploysense)
+[![npm total](https://img.shields.io/npm/dt/deploysense?style=flat&label=total+installs&color=cb3837&logo=npm)](https://www.npmjs.com/package/deploysense)
 
 </div>
 
