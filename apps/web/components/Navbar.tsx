@@ -1,17 +1,37 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 20);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-md">
+    <header
+      className="sticky top-0 z-40 border-b transition-all duration-200"
+      style={{
+        borderColor: scrolled ? "rgba(39,39,42,0.8)" : "rgba(39,39,42,0.4)",
+        background: scrolled
+          ? "rgba(9,9,11,0.90)"
+          : "rgba(9,9,11,0.50)",
+        backdropFilter: scrolled ? "blur(12px)" : "blur(4px)",
+      }}
+    >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link
           href="/"
           className="group flex items-center gap-2 font-mono text-base font-bold tracking-tight text-zinc-100"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-cyan-400 text-xs font-black text-zinc-950">
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-cyan-400 text-xs font-black text-zinc-950 shadow-sm shadow-cyan-900/40">
             DS
           </span>
           <span className="group-hover:text-cyan-300 transition-colors duration-150">
@@ -23,20 +43,18 @@ export function Navbar() {
         <div className="flex items-center gap-1 text-sm text-zinc-400">
           {[
             { href: "/scan",       label: "Scanner" },
-            { href: "/rules",      label: "Rules" },
-            { href: "/docs",       label: "Docs" },
-            { href: "/contribute", label: "Contribute", hidden: true },
-          ].map(({ href, label, hidden }) => (
+            { href: "/rules",      label: "Rules"   },
+            { href: "/docs",       label: "Docs"    },
+          ].map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className={`rounded px-3 py-1.5 font-medium transition-colors hover:bg-zinc-800 hover:text-zinc-100 ${hidden ? "hidden sm:inline-flex" : "inline-flex"}`}
+              className="inline-flex rounded px-3 py-1.5 font-medium transition-colors hover:bg-zinc-800 hover:text-zinc-100"
             >
               {label}
             </Link>
           ))}
 
-          {/* GitHub star CTA */}
           <a
             href="https://github.com/Abhi190702/DeploySense"
             target="_blank"

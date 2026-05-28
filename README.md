@@ -1,5 +1,7 @@
 <div align="center">
 
+![DeploySense Banner](https://raw.githubusercontent.com/Abhi190702/DeploySense/main/docs/banner.png)
+
 # DeploySense
 
 **Fix deployments before they break production.**
@@ -24,6 +26,21 @@ Open-source DevOps intelligence for Docker, Kubernetes, GitHub Actions, Docker C
 [![Codespaces](https://img.shields.io/badge/Codespaces-Open-181717?style=flat&logo=githubcodespaces)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=1248935551)
 
 </div>
+
+---
+
+## Project Status
+
+DeploySense is in active development (v0.1.1 public beta).
+
+| Component | Status |
+|---|---|
+| Scanners (54+ rules) | ✅ Production ready |
+| CLI | ✅ Production ready |
+| Web Dashboard | ✅ Production ready |
+| API | ✅ Hosted (cold start on free tier) / Self-hostable |
+| GitHub Action | 🔧 Functional, marketplace release pending |
+| VS Code Extension | 🔧 MVP built locally, marketplace release pending |
 
 ---
 
@@ -95,8 +112,8 @@ npx deploysense doctor deploy.log
 | Markdown and JSON reports | ✅ Ready |
 | Log Doctor with failure chains | ✅ Ready |
 | Conservative auto-fix engine | ✅ Ready |
-| GitHub Action | ✅ Ready |
-| VS Code extension MVP | ✅ Ready |
+| GitHub Action | ✅ Functional (local use) |
+| VS Code extension MVP | ✅ Built (local use) |
 | Shareable report links | ✅ Ready |
 
 ---
@@ -168,6 +185,8 @@ The dashboard includes a Monaco code editor, project architecture graph, rules e
 
 Live at [deploysense-api.onrender.com](https://deploysense-api.onrender.com/api/health).
 
+> **Note:** The hosted API runs on Render's free tier and may have a cold start delay of 20–30 seconds after a period of inactivity. For instant results, run the API locally with `pnpm --filter api dev`.
+
 Run locally:
 
 ```bash
@@ -207,6 +226,34 @@ jobs:
 ```
 
 The action posts a score summary to pull request comments and fails the build on any issue at or above the configured threshold.
+
+> The GitHub Action is functional for local workflow use. Marketplace release is on the roadmap.
+
+---
+
+## VS Code Extension
+
+The VS Code extension MVP is built and functional locally. Marketplace publishing is on the roadmap.
+
+To run it locally, open the `vscode-extension` folder in VS Code and press `F5` to launch the Extension Development Host.
+
+---
+
+## Profile Badge
+
+Track your deployment health contributions with the DeploySense contribution badge:
+
+```markdown
+![DeploySense Contributions](https://deploysense-api.onrender.com/api/badge/contributions?user=YOUR_USERNAME)
+```
+
+Example:
+
+![DeploySense](https://deploysense-api.onrender.com/api/badge/contributions?user=Abhi190702)
+
+The badge shows your last 90 days of GitHub contribution activity as an isometric city — each day rendered as a stack of cubes proportional to your commit count.
+
+> **Setup:** The badge requires `GITHUB_TOKEN` to be set in the API environment. Self-hosted deployments can set this in their environment variables.
 
 ---
 
@@ -289,6 +336,7 @@ Runs the web dashboard, API server, and nginx reverse proxy.
 - [x] Conservative auto-fix with safety gates
 - [x] Log Doctor failure chain correlations
 - [x] Cross-file architecture graph
+- [x] Contribution badge API (`/api/badge/contributions`)
 - [ ] GitHub Action marketplace release
 - [ ] VS Code marketplace release
 - [ ] Persistent share storage

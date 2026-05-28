@@ -4,20 +4,19 @@
 
 /* ── Brand tokens ──────────────────────────────── */
 :root {
-  --brand-cyan:   #22d3ee;
-  --brand-glow:   rgba(34, 211, 238, 0.15);
-  --surface-0:    #09090b;
-  --surface-1:    #18181b;
-  --surface-2:    #27272a;
-  --text-primary: #f4f4f5;
-  --text-muted:   #a1a1aa;
+  --brand-cyan:      #22d3ee;
+  --brand-cyan-dim:  rgba(34, 211, 238, 0.06);
+  --brand-glow:      rgba(34, 211, 238, 0.18);
+  --surface-0:       #09090b;
+  --surface-1:       #18181b;
+  --surface-2:       #27272a;
+  --text-primary:    #f4f4f5;
+  --text-muted:      #a1a1aa;
   color-scheme: dark;
 }
 
 /* ── Base ──────────────────────────────────────── */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -28,13 +27,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-/* ── Selection ─────────────────────────────────── */
 ::selection {
-  background: rgba(34, 211, 238, 0.25);
+  background: rgba(34, 211, 238, 0.22);
   color: #ecfeff;
 }
 
@@ -43,30 +39,52 @@ code, kbd, pre, .font-mono {
   font-family: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* ── Grid background ───────────────────────────── */
-.terminal-grid {
-  background-image:
-    linear-gradient(rgba(39, 39, 42, 0.45) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(39, 39, 42, 0.45) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* ── Perspective grid background ───────────────── */
+.hero-grid {
+  position: relative;
+  overflow: hidden;
 }
 
-/* ── Focus ring ────────────────────────────────── */
-.focus-ring {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+.hero-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  transform-origin: 50% 100%;
+  transform: perspective(600px) rotateX(25deg) scaleX(1.4);
+  animation: grid-drift 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
 }
-.focus-ring:focus-visible {
-  outline-color: var(--brand-cyan);
+
+@keyframes grid-drift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 48px; }
 }
+
+.hero-grid > * { position: relative; z-index: 1; }
 
 /* ── Bento card glow ───────────────────────────── */
 .card-glow {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  will-change: transform;
 }
 .card-glow:hover {
-  border-color: rgba(34, 211, 238, 0.4);
-  box-shadow: 0 0 18px rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.35);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.07);
+}
+
+/* ── 3D tilt container ─────────────────────────── */
+.tilt-container {
+  perspective: 1000px;
+}
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 /* ── Button micro-animations ───────────────────── */
@@ -74,24 +92,59 @@ code, kbd, pre, .font-mono {
   transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 .btn-primary:hover {
-  box-shadow: 0 4px 20px rgba(34, 211, 238, 0.35);
+  box-shadow: 0 4px 24px rgba(34, 211, 238, 0.32);
   transform: translateY(-1px);
 }
-.btn-primary:active {
-  transform: translateY(0);
-}
+.btn-primary:active { transform: translateY(0); }
 
 .btn-secondary {
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 /* ── Blinking cursor ───────────────────────────── */
-@keyframes blink {
+@keyframes cursor-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
 .cursor-blink {
-  animation: blink 1s step-end infinite;
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: #22d3ee;
+  vertical-align: text-bottom;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* ── Terminal scanline ─────────────────────────── */
+@keyframes scanline-sweep {
+  0%   { top: -8%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 108%; opacity: 0; }
+}
+.terminal-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(34, 211, 238, 0.025),
+    transparent
+  );
+  animation: scanline-sweep 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── Score ring glow pulse ─────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(52, 211, 153, 0.4)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.8)); }
+}
+.score-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
 }
 
 /* ── Stepper connector ─────────────────────────── */
@@ -102,5 +155,39 @@ code, kbd, pre, .font-mono {
   top: 36px;
   bottom: -16px;
   width: 2px;
-  background: linear-gradient(to bottom, rgba(34, 211, 238, 0.4), transparent);
+  background: linear-gradient(to bottom, rgba(34, 211, 238, 0.35), transparent);
+}
+
+/* ── Focus ring ────────────────────────────────── */
+.focus-ring { outline: 2px solid transparent; outline-offset: 2px; }
+.focus-ring:focus-visible { outline-color: var(--brand-cyan); }
+
+/* ── Page fade-in ──────────────────────────────── */
+.page-enter {
+  animation: pageFadeIn 0.3s ease forwards;
+}
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Hero word animation base ──────────────────── */
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* ── Feature card base (JS animates in) ────────── */
+.feature-card-animate {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* ── Terminal grid (fallback) ──────────────────── */
+.terminal-grid {
+  background-image:
+    linear-gradient(rgba(39, 39, 42, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(39, 39, 42, 0.4) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
