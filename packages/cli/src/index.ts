@@ -14,6 +14,7 @@ import { listDockerRules } from "@deploysense/docker-scanner";
 import { listGithubActionsRules } from "@deploysense/github-actions-scanner";
 import { listK8sRules } from "@deploysense/k8s-scanner";
 import { findScannableFiles, scanContent } from "./scanners";
+import { maybeShowFirstRunSplash, shouldSkipBanner, showSmallHeader, showSplash } from "./banner";
 
 const program = new Command();
 const severities: Severity[] = ["critical", "high", "medium", "low", "info"];
@@ -28,6 +29,7 @@ interface Config {
 program
   .name("deploysense")
   .description("Open-source DevOps intelligence for deployment configs and logs.")
+  .option("--no-banner", "disable DeploySense banner output")
   .version("0.1.1");
 
 program
@@ -36,6 +38,7 @@ program
   .option("--json", "output JSON")
   .option("--markdown", "output Markdown")
   .option("--sarif", "output SARIF")
+  .option("--no-banner", "disable DeploySense banner output")
   .option("--severity <level>", "only show issues at or above severity")
   .option("--fail-on <level>", "exit 1 if this severity or higher is found")
   .option("--scanner <type>", "force scanner: auto, dockerfile, github-actions, kubernetes, compose", "auto")
@@ -44,6 +47,9 @@ program
   .option("--apply-fixes", "apply safe auto-fixes after scanning")
   .option("--yes", "apply fixes without confirmation")
   .action((target: string, options: Record<string, unknown>) => {
+    if (!shouldSkipBanner(process.argv.slice(2))) {
+      showSmallHeader();
+    }
     const config = loadConfig(process.cwd());
     const full = path.resolve(target);
     const spinner = options.json || options.markdown || options.sarif || options.quiet ? undefined : ora("Scanning with DeploySense").start();
@@ -125,6 +131,19 @@ program.command("init").action(() => {
   fs.writeFileSync(target, "version: 1\nignore:\n  - node_modules/\n  - dist/\nrules:\n  disable: []\nfailOn: high\noutput: terminal\n");
   console.log(chalk.green("Created .deploysense.yml"));
 });
+
+/* ── Entrypoint ─────────────────────────────────────────────── */
+
+const _args = process.argv.slice(2);
+
+// No arguments → show full splash then help
+if (_args.length === 0) {
+  showSplash();
+  program.help(); // exits automatically
+}
+
+// First-ever run with any command → show splash once, then never again
+maybeShowFirstRunSplash(_args);
 
 program.parse();
 
