@@ -17,12 +17,12 @@
     "docs:generate": "tsx packages/scanner-core/src/generateDocs.ts"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^4.1.7",
     "tsx": "^4.19.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.7"
   },
   "dependencies": {
-    "@types/node": "^20.14.10",
-    "typescript": "^5.7.2"
+    "@types/node": "^25.9.1",
+    "typescript": "^6.0.3"
   }
 }
