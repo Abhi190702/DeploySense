@@ -67,7 +67,7 @@ program
       const filtered = filterResult(result, options.severity as Severity | undefined);
       outputResult(filtered, options);
       if (options.applyFixes) applyAndWriteFixes(full, result, Boolean(options.yes));
-      exitIfNeeded([result], options.failOn as Severity | undefined);
+      exitIfNeeded([result], (options.failOn as Severity) ?? config.failOn);
     } catch (error) {
       spinner?.fail("Scan failed");
       console.error(chalk.red(error instanceof Error ? error.message : String(error)));
