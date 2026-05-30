@@ -38,6 +38,13 @@ export function findScannableFiles(root: string, ignored: string[] = []): string
         if (!ignore.has(entry.name) && !ignored.some((pattern) => rel.startsWith(pattern.replace(/[\\\/]+$/, "")))) visit(full);
         continue;
       }
+      const normalized = rel.replace(/\\/g, "/").toLowerCase();
+      const base = path.basename(normalized);
+      const isYaml = /\.(ya?ml)$/.test(normalized);
+      const isDockerfile = base === "dockerfile" || normalized.endsWith(".dockerfile");
+      
+      if (!isYaml && !isDockerfile) continue;
+
       const content = fs.readFileSync(full, "utf8");
       if (detectScanner(rel, content)) results.push(full);
     }
