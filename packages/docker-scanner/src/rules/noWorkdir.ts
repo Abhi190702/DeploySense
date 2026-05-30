@@ -7,7 +7,7 @@ export const noWorkdirRule: Rule = {
   severity: "medium",
   category: "reliability",
   tags: ["best-practice"],
-  autoFixable: true,
+  autoFixable: false,
   check(input) {
     if (docker(input).workdir.length) return { issues: [] };
     const firstCopy = docker(input).copy[0];

@@ -7,7 +7,7 @@ export const rootUserRule: Rule = {
   severity: "high",
   category: "security",
   tags: ["least-privilege"],
-  autoFixable: true,
+  autoFixable: false,
   check(input) {
     if (docker(input).user.length) return { issues: [] };
     return {
