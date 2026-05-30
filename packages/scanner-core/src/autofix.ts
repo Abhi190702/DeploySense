@@ -49,13 +49,13 @@ const fixers: Record<string, Fixer> = {
     }
     const replacement = `RUN ${runLines.map((line) => stripRunInstruction(line).trim()).join(" && \\\n    ")}`;
     lines.splice(start, 3, replacement);
-    return { content: lines.join("\n"), fix: applied(issue, runLines.join("\n"), replacement, "Merge consecutive RUN commands") };
+    return { content: lines.join(getLineEnding(content)), fix: applied(issue, runLines.join(getLineEnding(content)), replacement, "Merge consecutive RUN commands") };
   },
   GHA_NO_TIMEOUT(content, issue) {
     const lines = splitLines(content);
     const jobLine = Math.max((issue.line ?? 1) - 1, 0);
     lines.splice(jobLine + 1, 0, "    timeout-minutes: 30");
-    return { content: lines.join("\n"), fix: applied(issue, "", "timeout-minutes: 30", "Add job timeout") };
+    return { content: lines.join(getLineEnding(content)), fix: applied(issue, "", "timeout-minutes: 30", "Add job timeout") };
   },
   GHA_NO_CONCURRENCY(content, issue) {
     const block = "concurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n";
@@ -74,7 +74,7 @@ const fixers: Record<string, Fixer> = {
     const lines = splitLines(content);
     const line = Math.max((issue.line ?? 1) - 1, 0);
     lines.splice(line + 1, 0, "    restart: unless-stopped");
-    return { content: lines.join("\n"), fix: applied(issue, "", "restart: unless-stopped", "Add restart policy") };
+    return { content: lines.join(getLineEnding(content)), fix: applied(issue, "", "restart: unless-stopped", "Add restart policy") };
   }
 };
 
@@ -124,7 +124,7 @@ function replaceLineContent(
   const next = transform(original);
   if (next === original) return { content };
   lines[index] = next;
-  return { content: lines.join("\n"), fix: applied(issue, original, next, description) };
+  return { content: lines.join(getLineEnding(content)), fix: applied(issue, original, next, description) };
 }
 
 function safetyBlocker(content: string, issue: Issue): string | undefined {
@@ -142,20 +142,12 @@ function hasYamlAnchors(content: string): boolean {
   return words.some((word) => word.startsWith("&") || word.startsWith("*") || word.includes(":&") || word.includes(":*"));
 }
 
+function getLineEnding(value: string): "\r\n" | "\n" {
+  return value.includes("\r\n") ? "\r\n" : "\n";
+}
+
 function splitLines(value: string): string[] {
-  const lines: string[] = [];
-  let current = "";
-  for (let index = 0; index < value.length; index += 1) {
-    const char = value[index];
-    if (char === "\n") {
-      lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
-      current = "";
-      continue;
-    }
-    current += char;
-  }
-  lines.push(current.endsWith("\r") ? current.slice(0, -1) : current);
-  return lines;
+  return value.split(/\r?\n/);
 }
 
 function isRunInstruction(line: string): boolean {
